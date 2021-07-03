@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+
+	<classPathEntry location="C:\Users\xy\Desktop\tool\mysql-drive\mysql-connector-java-8.0.16.jar"/>
+	<context id="context1" targetRuntime="MyBatis3">
+
+     <!-- 生成的Java文件的编码 -->
+        <property name="javaFileEncoding" value="UTF-8" />
+        <!-- 格式化java代码 -->
+        <property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter" />
+        <!-- JavaBean 实现 序列化 接口 -->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <!-- genenat entity时,生成toString -->
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+
+
+
+        <commentGenerator type="com.Mycommit">
+    		<property name="suppressDate" value="false"/>
+    		<property name="suppressAllComments" value="false"/>
+		</commentGenerator>
+
+
+<!--		<jdbcConnection driverClass="com.microsoft.sqlserver.jdbc.SQLServerDriver"-->
+<!--						connectionURL="jdbc:sqlserver://192.168.2.134:1433;DatabaseName=his_tb" userId="sa"-->
+<!--						password="zxd">-->
+<!--		</jdbcConnection>-->
+
+<!--		<javaTypeResolver>-->
+<!--			<property name="forceBigDecimals" value="false" />-->
+<!--		</javaTypeResolver>-->
+
+<!--		&lt;!&ndash; targetProject:生成PO类的位置 &ndash;&gt;-->
+<!--		<javaModelGenerator targetPackage="sjjd.doc.line.pojo"-->
+<!--							targetProject="src/main/java">-->
+<!--			&lt;!&ndash; enableSubPackages:是否让schema作为包的后缀 &ndash;&gt;-->
+<!--			<property name="enableSubPackages" value="false" />-->
+<!--			&lt;!&ndash; 从数据库返回的值被清理前后的空格 &ndash;&gt;-->
+<!--			<property name="trimStrings" value="true" />-->
+<!--		</javaModelGenerator>-->
+<!--		&lt;!&ndash; targetProject:mapper映射文件生成的位置 &ndash;&gt;-->
+<!--		<sqlMapGenerator targetPackage="mappers2"-->
+<!--						 targetProject="src/main/resources">-->
+<!--			&lt;!&ndash; enableSubPackages:是否让schema作为包的后缀 &ndash;&gt;-->
+<!--			<property name="enableSubPackages" value="false" />-->
+<!--		</sqlMapGenerator>-->
+<!--		&lt;!&ndash; targetPackage：mapper接口生成的位置 &ndash;&gt;-->
+<!--		<javaClientGenerator type="XMLMAPPER"-->
+<!--							 targetPackage="sjjd.doc.line.mapper2"-->
+<!--							 targetProject="src/main/java">-->
+<!--			&lt;!&ndash; enableSubPackages:是否让schema作为包的后缀 &ndash;&gt;-->
+<!--			<property name="enableSubPackages" value="false" />-->
+<!--		</javaClientGenerator>-->
+
+		<!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
+		<!--
+		<jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"
+			connectionURL="jdbc:oracle:thin:@150.16.17.22:1521/wsbs" us erId="hr"
+			password="hr123">
+		</jdbcConnection>-->
+
+		 <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://192.168.2.138:3306/yxfyhospbj"
+			userId="root"
+			password="123456">
+			<property name="nullCatalogMeansCurrent" value="true"/>
+		</jdbcConnection>
+
+		<!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和
+			NUMERIC 类型解析为java.math.BigDecimal -->
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<!-- targetProject:生成PO类的位置 -->
+		<javaModelGenerator targetPackage="sjjd.doc.line.pojo"
+			targetProject="src/main/java">
+			<!-- enableSubPackages:是否让schema作为包的后缀 -->
+			<property name="enableSubPackages" value="false" />
+			<!-- 从数据库返回的值被清理前后的空格 -->
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+        <!-- targetProject:mapper映射文件生成的位置 -->
+		<sqlMapGenerator targetPackage="mappers"
+			targetProject="src/main/resources">
+			<!-- enableSubPackages:是否让schema作为包的后缀 -->
+			<property name="enableSubPackages" value="false" />
+		</sqlMapGenerator>
+		<!-- targetPackage：mapper接口生成的位置 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="sjjd.doc.line.mapper"
+			targetProject="src/main/java">
+			<!-- enableSubPackages:是否让schema作为包的后缀 -->
+			<property name="enableSubPackages" value="false" />
+		</javaClientGenerator>
+		<!-- 指定数据库表 -->
+		<!--<table tableName="items"></table> -->
+		<table tableName="facility"
+		>
+
+		</table>
+  </context>
+</generatorConfiguration>

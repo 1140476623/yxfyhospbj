@@ -1,0 +1,19 @@
+
+<div class="layui-side layui-bg-black" th:fragment="leftpage" xmlns:th="http://www.thymeleaf.org">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+     
+      <ul class="layui-nav layui-nav-tree"  lay-filter="test" th:each="nodeparent:${#session.getAttribute('nodeparent') }">
+        <li class="layui-nav-item">
+          <a  style="color:white" th:if="(${nodeparent.nodeLink == null || nodeparent.nodeLink == ''})" href="javascript:;" >&nbsp;&nbsp;<span th:text="${nodeparent.nodeName}"></span></a>
+          <a  style="color:white" th:if="(${nodeparent.nodeLink != null && nodeparent.nodeLink != ''})" th:href="@{${nodeparent.nodeLink}}" >&nbsp;&nbsp;<span th:text="${nodeparent.nodeName}"></span></a>
+          <dl class="layui-nav-child" th:each="nodesons,userStat:${#session.getAttribute('nodeson') }" >
+            <dd th:class="${#strings.replace(nodesons.nodeLink,'/','')}" th:if="(${nodesons.parentId}==${nodeparent.id})">
+            <a style="color:white" th:href="@{${nodesons.nodeLink}}" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span th:text="${nodesons.nodeName}"></span></a>
+            </dd>
+          </dl>
+        </li>
+        
+      </ul>
+    </div>
+</div>

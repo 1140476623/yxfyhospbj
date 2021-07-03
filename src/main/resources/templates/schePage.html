@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>后台管理系统</title>
+<link th:href="@{/layui/css/layui.css}" rel="stylesheet" type="text/css">
+<script th:src="@{/js/jquery-1.8.2.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/common.js}" type="text/javascript"></script>
+<script th:src="@{/layui/layui.js}" type="text/javascript"></script>
+<link rel="stylesheet" th:href="@{/font-awesome/css/font-awesome.min.css}">
+
+    <link th:href='@{/fullcalendar/fullcalendar.css}' rel='stylesheet' type="text/css"/>
+    <link th:href='@{/fullcalendar/fullcalendar.print.css}' rel='stylesheet' type="text/css" media='print'/>
+    <script th:src='@{/fullcalendar/lib/jquery.min.js}' type="text/javascript"></script>
+    <script th:src='@{/fullcalendar/lib/jquery-ui.min.js}' type="text/javascript"></script>
+
+
+
+    <script th:src='@{/fullcalendar/lib/moment.min.js}' type="text/javascript"></script>
+    <script th:src='@{/fullcalendar/fullcalendar.js}' type="text/javascript"></script>
+
+
+    <script th:src='@{/fullcalendar/locale/zh-cn.js}' type="text/javascript"></script>
+<style>
+        .auth {
+            border: 1px solid rgb(200, 200, 200);
+            position: absolute;
+            top: 32%;
+            left: 32%;
+            width: 400px;
+            display: none;
+            background: white;
+            z-index: 50;
+        }
+       .layui-form-select{width:182px;}
+       
+       .layui-table-cell{
+		height:30px !important;
+		
+	}
+        .layui-tab-content,.layui-table-view {
+           padding: 0px;
+           margin: 0px;
+        }
+	 .laytable-cell-1-0-3 {
+        width: 240px;
+        height:auto;
+        }
+	 .layui-table-col-special {
+    height:50px;
+	}
+         .layui-table thead tr,.layui-table-header
+       {
+             color: #fff;
+            background-color: #5EA3E6;
+
+
+        }
+
+	.laytable-cell-1-goPhoto{  /*最后的pic为字段的field*/
+       height: 100%;
+       width: 100%;
+
+   }
+
+        .layui-table tbody{
+            height: 50px;
+        }
+ .layui-table-cell{
+		text-align:center;
+		height: 50px ;
+
+ }
+
+        .layui-unselect {width:390px; }
+        #listGroup .layui-form-checkbox[lay-skin=primary]{
+            width:150px;
+            margin-bottom: 20px;
+        }
+        #autn .layui-unselect {width:290px; }
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+	<div th:replace="~{header :: copy}"></div>
+	<div th:replace="~{left :: leftpage}"></div>
+
+<div class="layui-body">
+    <!-- 内容主体区域 -->
+    <div style="padding: 15px;">
+        <div id="doctorList" >
+
+
+            <div class="layui-tab" lay-filter="demo">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" name="0" >医生</li>
+                    <li name="1" >护士</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show"><table class="layui-hide" id="test" lay-filter="test"></table></div>
+                    <div class="layui-tab-item"><table class="layui-hide" id="test1" lay-filter="test1"></table></div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div id="doctorMsg" class="layui-form" style="margin-top: 10px ;display: none;">
+            <form action="" method="post" enctype="multipart/form-data" id="signupForm1">
+                <div style="height: 40px">
+                        <div style="float:left;width: 4px;height: 25px; background:  #5EA3E6;margin-right: 5px;margin-top: 10px"></div>  <h2 style="display: inline-block; font-weight: 600;margin-top: 10px">排班信息</h2><span style="margin-top: 10px;color: #EB5B5B;display: inline-block; margin-left: 10px;font-weight: 600;">上次编辑时间:2019-08-09 11:00</span>
+<!--                    <button id="resetButton" class="layui-btn layui-btn-primary" style="float: right;margin-right: 30px"><i class="layui-icon layui-icon-fonts-clear" style="font-size: 15px; "></i>重置</button>-->
+
+
+        </div>
+
+                <hr class="layui-bg-blue" >
+
+<!--                        <div class="layui-upload" style="margin-top:10px;margin-left: 10%;float:left">-->
+
+                <!--                            <div class="layui-upload-list" style="">-->
+                <!--                                <img class="layui-upload-img" th:src="@{/image/moren.png}"  th:onerror="showDefaultImg(this)"  width=214px height=300px id="photo" style="width:214px;height:300px;background:rgba(159,159,159,1);">-->
+                <!--                                <p id="demoText"></p>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+
+                    <div id="inputLine" >
+                        <div id='calendar' style="width: 1100px;margin-left: 10px ;float: left;"></div>
+
+                        <div  style="width: 500px;float: left;margin-left: 60px">
+
+                            <div class="layui-inline" style="margin-bottom: 10px;width: 350px">
+                                <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+                            </div>
+                            <button id="demoTable" style="margin-left: 20px;margin-bottom: 10px" class="layui-btn" data-type="reload" ><i class="layui-icon layui-icon-search" style="font-size: 15px; "></i>搜索</button>
+
+                            <table class="layui-hide" id="sche" lay-filter="sche" ></table>
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+
+
+            </form>
+
+
+        </div>
+
+
+   		
+   	
+    
+
+
+    
+    
+    </div>
+  </div>
+  
+   
+ </div>
+<div class="group layui-layer-wrap" >
+    <div id="group" class="layui-form" style="display:none">
+        <div class="layui-input-block" id="listGroup" style="margin: 25px !important;">
+
+        </div>
+    </div>
+</div>
+<div style="width: 400px; position: relative; left: 20%; display: none;"  id="autn">
+
+    <form class="layui-form layui-form-pane" action="">
+
+        <div class="layui-inline" style="margin-top: 10px;margin-bottom: 10px">
+            <label class="layui-form-label">限号数</label>
+            <div class="layui-input-inline" style="width: 290px">
+                <input type="tel" id="limit" name="limit" lay-verify="timeName" autocomplete="off" class="layui-input" >
+            </div>
+        </div>
+
+        <div class="layui-inline" style="margin-bottom: 10px">
+            <label class="layui-form-label">费用</label>
+            <div class="layui-input-inline" style="width: 290px">
+                <input type="tel" id="mediExpense" name="mediExpense" lay-verify="timeName" autocomplete="off" class="layui-input" >
+            </div>
+        </div>
+        <br>
+
+        <div class="layui-input-inline">
+            <label class="layui-form-label">时间段</label>
+            <div class="layui-input-block" style="margin-bottom : 10px;">
+                <select name="timeId" id="timeId" lay-filter="role" class="layui-select"  style="width: 170px">
+                    <option value="">--请选择--</option>
+
+                </select>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item" style="float: bottom">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="addRole" >立即提交</button>
+             <button type="reset" class="layui-btn layui-btn-primary" style="background-color: #CCCCCC;color: #0D0D0D !important;">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" th:value="${pagelogo}" id="iden">
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="modifly">排班</a>
+  
+</script>
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>
+
+<script type="text/html" id="caStickModel">
+	<div>
+		<input type="checkbox" value={{d.status}} lay-skin="switch" lay-filter="switchTest" lay-text="启用|禁用"  {{ d.status == '1' ? 'checked' : '' }} >
+	</div>
+</script>
+
+<script type="text/html" id="goimage">
+<div>
+	{{# if(d.docHead == null || d.docHead==""){ }}
+	<span>无</span>
+	 {{# }else { }}
+	<img src="{{d.docHead}}" style="height:50px; width:100%;">
+	{{# } }}
+</div>
+</script>
+
+
+
+<script>
+
+    var iden=$("#iden").val();
+    console.log(iden);
+    showthis(iden);
+
+    layui.use(['laytpl','laypage','table','element','layer','jquery','form','upload'], function(){
+        var table = layui.table,
+            element = layui.element,
+            $ = layui.jquery,
+            form=layui.form,
+            layer=layui.layer,
+            upload=layui.upload,
+            laytpl = layui.laytpl;
+        var loadindex=null;
+        table.render({
+            id:'testReloads'
+            ,elem: '#test1'
+            ,url:'[[@{/scheduling/watchList}]]'
+            ,title: '用户数据表'
+            ,skin:'nob'
+            ,where:{
+                type:'1',
+                scheType:'0'
+            }
+            ,cols: [
+                [
+                    {field:'id', title:'id',hide:'true'}
+                    ,{field:'docName', title:'姓名'}
+                    ,{field:'depName', title:'科室'}
+                    ,{field:'updateTime', title:'上次操作时间'}
+                    ,{field:'adName', title:'操作人员'}
+                    ,{field:'doctype', title:'人员类型',hide:'true'}
+                    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+                ]
+            ]
+            ,page: true
+
+        });
+
+        table.render({
+            id:'testReload'
+            ,elem: '#test'
+            ,url:'[[@{/scheduling/watchList}]]'
+            ,title: '用户数据表'
+            ,skin:'nob'
+            ,where:{
+                type:'0',
+                scheType:'0'
+            }
+            ,cols: [
+                [
+                    {field:'id', title:'id',hide:'true'}
+                    ,{field:'docName', title:'姓名'}
+                    ,{field:'depName', title:'科室'}
+                    ,{field:'updateTime', title:'上次操作时间'}
+                    ,{field:'adName', title:'操作人员'}
+                    ,{field:'doctype', title:'人员类型',hide:'true'}
+                    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+                ]
+            ]
+            ,page: true
+
+        });
+        var docid="";
+        var timeName="";
+        var time="";
+
+        var active = {
+            reload: function(){
+                var docName = $('#demoReload');
+
+                //执行重载
+                table.reload('testReload1', {
+                    where: {
+                        docid: docid,
+                        date:time,
+                        docName:docName.val(),
+                        type:0
+                    }
+                });
+            }
+        };
+
+        $('#demoTable').on('click', function(){
+
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+            return false;
+        });
+
+        $.get('[[@{/scheduling/timeslotAll}]]',{}, function (data) {
+            var $html = "";
+            if(data.data != null){
+                $.each(data.data, function (index, item) {
+
+                    if (item.proType){
+                        $html += "<option class='generate' value='" + item.id + "'>" + item.timeName + "</option>";
+                    }else{
+                        $html += "<option value='" + item.id + "'>" + item.timeName + "</option>";
+                    }
+                });
+
+                $("select[name='timeId']").append($html);
+
+                //反选
+                //$("select[name='interest']").val($("#???").val());
+                //append后必须从新渲染
+                form.render('select');
+            }
+        });
+
+        $.get('[[@{/scheduling/timeslotAll}]]',{}, function (data) {
+            $('#listGroup').children().remove();
+            var $html = "";
+            if(data.data != null){
+                $.each(data.data, function (index, item) {
+                    $('#listGroup').append('<input type="checkbox" title="'+item.timeName+'" name="item" value="'+item.id+'"  lay-skin="primary">');
+                });
+
+                //反选
+                //$("select[name='interest']").val($("#???").val());
+                //append后必须从新渲染
+                form.render();
+            }
+        });
+
+        //监听提交
+        form.on('submit(addRole)', function(data){
+
+            $.ajax({
+                type: 'post',
+                url: '[[@{/scheduling/addSche}]]', // ajax请求路径
+                data:{
+                    tid:data.field.timeId,
+                    mediExpense:data.field.mediExpense,
+                    date:time,
+                    docid:docid,
+                    type:"0",
+                    limit:data.field.limit
+
+                },
+                dataType:'json',
+                async:false,
+                success: function(data){
+                    if(data.state==1){
+                        $('#calendar').fullCalendar('refetchEvents');
+                        /* var m = $('#calendar').fullCalendar('getView').title;
+                         console.log(m);*/
+                        layer.closeAll();
+                        layer.msg(data.message);
+                        return false;
+                    }else {
+                        layer.msg(data.message);
+                        return false;
+                    }
+                }
+            });
+
+            return false;
+        });
+
+
+//多图片上传
+        var uploadInst = upload.render({
+            elem: '#test2'     /*根据绑定id，打开本地图片*/
+            ,url: '${ctx}/origin/user/saveOrUpdate'  /*上传后台接受接口*/
+            ,auto: false        /*true为选中图片直接提交，false为不提交根据bindAction属性上的id提交*/
+            ,multiple: true
+            ,bindAction: '#formSubmit'   /*提交图片*/
+            ,choose:function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img" style="width: 98px;height: 98px;margin: 5px">')
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+            }
+            ,error: function(){
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst.upload();
+                });
+            }
+        });
+
+        $(document).on('click','#rolback',function(){
+            location.replace('[[@{/doctor/showdoctor}]]');
+        });
+        //监听分页
+        $.get('[[@{/admin/getRoleselect}]]',{}, function (data) {
+            var $html = "";
+            if(data.data != null){
+                $.each(data.data, function (index, item) {
+
+                    if (item.proType){
+                        $html += "<option class='generate' value='" + item.id + "'>" + item.roleName + "</option>";
+                    }else{
+                        $html += "<option value='" + item.id + "'>" + item.roleName + "</option>";
+                    }
+                });
+
+                $("select[name='rId']").append($html);
+
+                //反选
+                //$("select[name='interest']").val($("#???").val());
+                //append后必须从新渲染
+                form.render('select');
+            }
+        });
+
+
+
+
+        element.on('tab(demo)', function(data){
+            $('#listGroup').children().remove();
+            $.get('[[@{/doctor/AllDoctor}]]',{type:data.index}, function (data) {
+                var $html = "";
+                if(data.data != null){
+                    $.each(data.data, function (index, item) {
+                        $('#listGroup').append('<input type="checkbox" title="'+item.docName+'" name="item" value="'+item.id+'"  lay-skin="primary">');
+                    });
+
+                    //反选
+                    //$("select[name='interest']").val($("#???").val());
+                    //append后必须从新渲染
+                    form.render();
+                }
+            });
+        });
+
+
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            var aid=data['id'];
+
+            if(obj.event == 'delete'){
+                layer.confirm('真的删除行么',{btn: ['确定', '取消'],title:"提示"},function(index){
+
+                    $.ajax({
+                        type: 'post',
+                        url: '[[@{/admin/delAdmin}]]', // ajax请求路径
+                        data: {
+                            id:aid
+                        },
+                        dataType:'json',
+                        async:false,
+                        success: function(data){
+                            if(data.state==1){
+                                layer.msg('删除成功',{
+                                    time:1000,
+                                    end:function () {
+                                        location.reload();
+                                    }
+                                })
+                            }else {
+                                return layer.msg(data.message);
+                            }
+                        }
+                    });
+                    layer.close(index);
+                });
+            }
+            if(obj.event == 'modifly'){
+                $('#doctorMsg').css("display","block");
+                $('#doctorList').css("display","none");
+                var date=new Date;
+                var year=date.getFullYear();
+                var month=date.getMonth()+1;
+                month =(month<10 ? "0"+month:month);
+                var mydate = (year.toString()+"-"+month.toString());
+                var datetime=year.toString()+month.toString();
+
+                table.render({
+                    id:'testReload1'
+                    ,elem: '#sche'
+                    ,url:'[[@{/scheduling/details}]]'
+                    ,width:500
+                    ,height:800
+                    ,where:{
+                        docid:data['id'],
+                        date:"1990-01-01",
+                        type:0
+                    }
+                    ,title: '用户数据表'
+                    ,skin:'nob'
+                    ,cols: [
+                        [
+
+                            {field:'docId', title: '姓名'}
+                            ,{field:'timeId',  title: '班次'}
+                            ,{field:'updateId',  title: '时间'}
+                        ]
+                    ]
+                });
+
+                $('#calendar').fullCalendar({
+
+
+
+                    //头工具栏，三个位置，左中右，https://www.helloweba.net/javascript/447.html#fc-header  有固定参数。
+                    header: {
+                        left: 'prev,next today myCustomButton',
+                        center: 'title',
+                        right:'myCustomButton'
+                    },
+
+
+                    drop: function(date,jsEvent,ui) {
+                        alert("Dropped on " + date);
+                    },
+                    eventDragStart: function(event) {
+                        console.log("开始");
+                    },
+                    eventDragStop: function(event) {
+                        console.log("结束");
+                    },
+                    eventReceive:function(draggedEl,event) {
+                        var time=draggedEl.start.format().substring(0,draggedEl.start.format().lastIndexOf("-"));
+
+                        if(time!=mydate){
+                            layer.msg("不能排本月外的日期",{
+                                time:1000,
+                                end:function () {
+                                    location.reload();
+                                    $('#tableform').css('display', 'none');
+                                    $('#calform').css('display', 'block');
+                                    $('#cid').val(sessionStorage.getItem("cid"));
+                                }
+                            })
+
+                            return false;
+
+                        }
+                        alert("Dropped on " + draggedEl.start.format());
+                        console.log(draggedEl);
+                        console.log(event.intervalStart.format()+";"+event.intervalEnd.format());
+
+
+
+                    },
+                    defaultDate: mydate, //默认时间，
+                    defaultView:'month', //默认视图
+                    // editable: true,//可以被编辑
+
+                    selectable: true,//是否允许用户单击或者拖拽日历中的天和时间隙。默认false。
+                    firstDay: 1,//设置每周第一天，数字int型，默认0（周日）
+                    timezone: 'local',//时区
+                    timeFormat: 'HH:mm:ss',//时间格式
+                    eventLimit: true, // allow "more" link when too many events
+                    views: {
+                        agenda: {
+                            eventLimit: 1 // adjust to 6 only for agendaWeek/agendaDay
+                        }
+
+                    },
+                    loading: function( isLoading, view ){
+                        //暂时这里没有看到效果
+                        console.log("loading回调",view)
+                    },
+
+                    events:function(start,end,timezone, callback) {
+                        var date = this.getDate().format('YYYYMM');
+
+                        var did=sessionStorage.getItem("cid");
+                        var url='[[@{/scheduling/scheList}]]';
+                        console.log(url);
+
+                        $.ajax({
+                            url: url,
+                            dataType: 'json',
+                            data: {
+                                docid:data['id'],
+                                date: date,
+                                type:0
+                            },
+                            success: function(json) { // 获取当前月的数据
+                                var events = [];
+                                if (json.state == 1) {
+                                    $.each(json.data,function(i,c) {
+                                        events.push({
+                                            title: c.title+" 限号数:"+c.limit,
+                                            start: c.start ,
+                                            end: c.end,// will be parsed
+                                            color:"#5EA3E6",
+                                            id:c.id,
+
+                                        });
+                                    });
+                                }
+                                callback(events);
+                            }
+                        });
+                    },
+                    selectAllow : function(clickInfo) {//禁止点击的控制,是否允许点击false不让点击，  将用户选择限制到某些时间窗口。仅当selectable选项是激活状态时可用。值为事件id或对象。
+                        var start = clickInfo.start.unix();//获取点击的开始时间
+
+                        var t=new Date();
+                        var iToDay=t.getDate();
+                        var iToMon=t.getMonth();
+                        var iToYear=t.getFullYear();
+                        var newDay = new Date(iToYear,iToMon,(iToDay+30));
+
+
+                        var date=new Date(clickInfo.start);//点击日历上的某个时间触发的函数
+                        var year=date.getFullYear();
+                        var month=date.getMonth()+1;
+                        var day=date.getDate();
+                        month =(month<10 ? "0"+month:month);
+                        day =(day<10 ? "0"+day:day);
+                        var datetime=year.toString()+"-"+month.toString()+"-"+day.toString();
+
+                        table.reload('testReload1', {
+                            where: {
+                                docid: data['id'],
+                                date:datetime,
+                                docName:$('#demoReload').val(),
+                                type:0
+                            }
+                        });
+
+
+
+                        //如果大于当前时间就让点击，否则就不让点击，提示
+                        if(clickInfo.end >= new Date() && clickInfo.start < newDay.getTime()){
+                            return true;
+                        }
+
+
+                        //不让点击了 提示
+                        layer.msg("只能排30天内的班");
+                        return false;
+                    },
+                    select:function(start, jsEvent) {
+                        var date=new Date(start);//点击日历上的某个时间触发的函数
+                        var year=date.getFullYear();
+                        var month=date.getMonth()+1;
+                        var day=date.getDate();
+                        month =(month<10 ? "0"+month:month);
+                        day =(day<10 ? "0"+day:day);
+                        var datetime=year.toString()+"-"+month.toString()+"-"+day.toString();
+
+                        console.log(datetime);
+
+                        table.reload('testReload1', {
+                            where: {
+                                docid: data['id'],
+                                date:datetime,
+                                docName:$('#demoReload').val(),
+                                type:0
+                            }
+                        });
+                        docid=data['id'];
+                        timeName=$('#demoReload').val();
+                        time=datetime;
+
+
+
+
+
+
+                        index =layer.open({
+                            type: 1,
+                            area: ['600px', '300px'],
+                            title: '时间段添加',
+                            skin: 'layui-layer-demo', //加上边框
+                            content: $('#autn')
+                        });
+                        //设置位置
+                        layer.style(index, {
+                            top: '150px'
+                        });
+
+
+
+
+                    },
+
+                    eventMouseover: function( event, jsEvent, view ) { //鼠标划过的事件
+                        layer.tips(event.title, this);
+                    },
+                    eventMouseout:function( event, jsEvent, view ) { //鼠标离开的事件
+                        var index = layer.tips();
+                        layer.close(index);
+                    },
+
+                    eventClick: function(eventObj,start) {//点击日期控件上显示的事件触发的事件
+                        var tid=eventObj.id;
+                        console.log(tid);
+                        var date=new Date(eventObj.start);//点击日历上的某个时间触发的函数
+                        var year=date.getFullYear();
+                        var month=date.getMonth()+1;
+                        var day=date.getDate();
+                        month =(month<10 ? "0"+month:month);
+                        day =(day<10 ? "0"+day:day);
+                        var datetime=year.toString()+"-"+month.toString()+"-"+day.toString();
+
+                        var t=new Date();
+                        var iToDay=t.getDate();
+                        var iToMon=t.getMonth();
+                        var iToYear=t.getFullYear();
+                        var newDay = new Date(iToYear,iToMon,(iToDay+30));
+
+                        // if(eventObj.end >= new Date() && eventObj.start < newDay.getTime() ) {
+                        $.ajax({
+                            type: 'post',
+                            url: '[[@{/scheduling/delSche}]]', // ajax请求路径
+                            data: {
+                                tid: tid,
+                                date: datetime,
+                                docid: data['id'],
+                                type: "0"
+
+                            },
+                            dataType: 'json',
+                            async: false,
+                            success: function (data) {
+                                if (data.state == 1) {
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                    /* var m = $('#calendar').fullCalendar('getView').title;
+                                     console.log(m);*/
+                                    layer.closeAll();
+                                    layer.msg(data.message);
+                                    return false;
+                                } else {
+                                    layer.msg(data.message);
+                                    return false;
+                                }
+                            }
+                        });
+                        //    return true;
+
+                        // }else{
+                        //     layer.msg("只能排30天内的班");
+                        //     return false;
+                        // }
+
+
+
+
+
+
+                    }
+                });
+            }
+
+
+        });
+        //监听行工具事件
+        table.on('tool(test1)', function(obj){
+            var data = obj.data;
+            var aid=data['id'];
+
+            if(obj.event == 'delete'){
+                layer.confirm('真的删除行么',{btn: ['确定', '取消'],title:"提示"},function(index){
+
+                    $.ajax({
+                        type: 'post',
+                        url: '[[@{/admin/delAdmin}]]', // ajax请求路径
+                        data: {
+                            id:aid
+                        },
+                        dataType:'json',
+                        async:false,
+                        success: function(data){
+                            if(data.state==1){
+                                layer.msg('删除成功',{
+                                    time:1000,
+                                    end:function () {
+                                        location.reload();
+                                    }
+                                })
+                            }else {
+                                return layer.msg(data.message);
+                            }
+                        }
+                    });
+                    layer.close(index);
+                });
+            }
+            if(obj.event == 'modifly'){
+                $('#doctorMsg').css("display","block");
+                $('#doctorList').css("display","none");
+                var date=new Date;
+                var year=date.getFullYear();
+                var month=date.getMonth()+1;
+                month =(month<10 ? "0"+month:month);
+                var mydate = (year.toString()+"-"+month.toString());
+                var datetime=year.toString()+month.toString();
+
+                table.render({
+                    id:'testReload1'
+                    ,elem: '#sche'
+                    ,url:'[[@{/scheduling/details}]]'
+                    ,width:500
+                    ,height:800
+                    ,where:{
+                        docid:data['id'],
+                        date:"1990-01-01",
+                        type:0
+                    }
+                    ,title: '用户数据表'
+                    ,skin:'nob'
+                    ,cols: [
+                        [
+
+                            {field:'docId', title: '姓名'}
+                            ,{field:'timeId',  title: '班次'}
+                            ,{field:'updateId',  title: '时间'}
+                        ]
+                    ]
+                });
+
+                $('#calendar').fullCalendar({
+
+
+
+                    //头工具栏，三个位置，左中右，https://www.helloweba.net/javascript/447.html#fc-header  有固定参数。
+                    header: {
+                        left: 'prev,next today myCustomButton',
+                        center: 'title',
+                        right:'myCustomButton'
+                    },
+
+
+                    drop: function(date,jsEvent,ui) {
+                        alert("Dropped on " + date);
+                    },
+                    eventDragStart: function(event) {
+                        console.log("开始");
+                    },
+                    eventDragStop: function(event) {
+                        console.log("结束");
+                    },
+                    eventReceive:function(draggedEl,event) {
+                        var time=draggedEl.start.format().substring(0,draggedEl.start.format().lastIndexOf("-"));
+
+                        if(time!=mydate){
+                            layer.msg("不能排本月外的日期",{
+                                time:1000,
+                                end:function () {
+                                    location.reload();
+                                    $('#tableform').css('display', 'none');
+                                    $('#calform').css('display', 'block');
+                                    $('#cid').val(sessionStorage.getItem("cid"));
+                                }
+                            })
+
+                            return false;
+
+                        }
+                        alert("Dropped on " + draggedEl.start.format());
+                        console.log(draggedEl);
+                        console.log(event.intervalStart.format()+";"+event.intervalEnd.format());
+
+
+
+                    },
+                    defaultDate: mydate, //默认时间，
+                    defaultView:'month', //默认视图
+                    // editable: true,//可以被编辑
+
+                    selectable: true,//是否允许用户单击或者拖拽日历中的天和时间隙。默认false。
+                    firstDay: 1,//设置每周第一天，数字int型，默认0（周日）
+                    timezone: 'local',//时区
+                    timeFormat: 'HH:mm:ss',//时间格式
+                    eventLimit: true, // allow "more" link when too many events
+                    views: {
+                        agenda: {
+                            eventLimit: 1 // adjust to 6 only for agendaWeek/agendaDay
+                        }
+
+                    },
+                    loading: function( isLoading, view ){
+                        //暂时这里没有看到效果
+                        console.log("loading回调",view)
+                    },
+
+                    events:function(start,end,timezone, callback) {
+                        var date = this.getDate().format('YYYYMM');
+
+                        var did=sessionStorage.getItem("cid");
+                        var url='[[@{/scheduling/scheList}]]';
+                        console.log(url);
+
+                        $.ajax({
+                            url: url,
+                            dataType: 'json',
+                            data: {
+                                docid:data['id'],
+                                date: date,
+                                type:0
+                            },
+                            success: function(json) { // 获取当前月的数据
+                                var events = [];
+                                if (json.state == 1) {
+                                    $.each(json.data,function(i,c) {
+                                        events.push({
+                                            title: c.title+" 限号数:"+c.limit,
+                                            start: c.start ,
+                                            end: c.end,// will be parsed
+                                            color:"#5EA3E6",
+                                            id:c.id,
+
+                                        });
+                                    });
+                                }
+                                callback(events);
+                            }
+                        });
+                    },
+                    selectAllow : function(clickInfo) {//禁止点击的控制,是否允许点击false不让点击，  将用户选择限制到某些时间窗口。仅当selectable选项是激活状态时可用。值为事件id或对象。
+                        var start = clickInfo.start.unix();//获取点击的开始时间
+
+                        var t=new Date();
+                        var iToDay=t.getDate();
+                        var iToMon=t.getMonth();
+                        var iToYear=t.getFullYear();
+                        var newDay = new Date(iToYear,iToMon,(iToDay+30));
+
+                        var date=new Date(clickInfo.start);//点击日历上的某个时间触发的函数
+                        var year=date.getFullYear();
+                        var month=date.getMonth()+1;
+                        var day=date.getDate();
+                        month =(month<10 ? "0"+month:month);
+                        day =(day<10 ? "0"+day:day);
+                        var datetime=year.toString()+"-"+month.toString()+"-"+day.toString();
+
+                        table.reload('testReload1', {
+                            where: {
+                                docid: data['id'],
+                                date:datetime,
+                                docName:$('#demoReload').val(),
+                                type:0
+                            }
+                        });
+
+
+
+
+                        //如果大于当前时间就让点击，否则就不让点击，提示
+                        if(clickInfo.end >= new Date() && clickInfo.start < newDay.getTime()){
+                            return true;
+                        }
+
+
+                        //不让点击了 提示
+                        layer.msg("只能排30天内的班");
+                        return false;
+                    },
+                    select:function(start, jsEvent) {
+                        var date=new Date(start);//点击日历上的某个时间触发的函数
+                        var year=date.getFullYear();
+                        var month=date.getMonth()+1;
+                        var day=date.getDate();
+                        month =(month<10 ? "0"+month:month);
+                        day =(day<10 ? "0"+day:day);
+                        var datetime=year.toString()+"-"+month.toString()+"-"+day.toString();
+
+                        console.log(datetime);
+
+                        table.reload('testReload1', {
+                            where: {
+                                docid: data['id'],
+                                date:datetime,
+                                docName:$('#demoReload').val(),
+                                type:0
+                            }
+                        });
+                        docid=data['id'];
+                        timeName=$('#demoReload').val();
+                        time=datetime;
+
+
+
+
+
+
+                        index =layer.open({
+                            type: 1,
+                            area: ['600px', '300px'],
+                            title: '时间段添加',
+                            skin: 'layui-layer-demo', //加上边框
+                            content: $('#autn')
+                        });
+                        //设置位置
+                        layer.style(index, {
+                            top: '150px'
+                        });
+
+
+
+
+                    },
+
+                    eventMouseover: function( event, jsEvent, view ) { //鼠标划过的事件
+                        layer.tips(event.title, this);
+                    },
+                    eventMouseout:function( event, jsEvent, view ) { //鼠标离开的事件
+                        var index = layer.tips();
+                        layer.close(index);
+                    },
+
+                    eventClick: function(eventObj,start) {//点击日期控件上显示的事件触发的事件
+                        console.log("进入方法");
+                        var tid=eventObj.id;
+                        console.log(tid);
+                        var date=new Date(eventObj.start);//点击日历上的某个时间触发的函数
+                        var year=date.getFullYear();
+                        var month=date.getMonth()+1;
+                        var day=date.getDate();
+                        month =(month<10 ? "0"+month:month);
+                        day =(day<10 ? "0"+day:day);
+                        var datetime=year.toString()+"-"+month.toString()+"-"+day.toString();
+                        $.ajax({
+                            type: 'post',
+                            url: '[[@{/scheduling/delSche}]]', // ajax请求路径
+                            data:{
+                                tid:tid,
+                                date:datetime,
+                                docid:data['id'],
+                                type:"0"
+
+                            },
+                            dataType:'json',
+                            async:false,
+                            success: function(data){
+                                if(data.state==1){
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                    /* var m = $('#calendar').fullCalendar('getView').title;
+                                     console.log(m);*/
+                                    layer.closeAll();
+                                    layer.msg(data.message);
+                                    return false;
+                                }else {
+                                    layer.msg(data.message);
+                                    return false;
+                                }
+                            }
+                        });
+
+
+
+                    }
+                });
+            }
+
+
+        });
+
+
+
+
+
+//监听提交
+        form.on('submit(modiAdmin)', function(data){
+            var formData = new FormData($( "#signupForm" )[0]);
+            $.ajax({
+                type: 'post',
+                url: '[[@{/doctor/modiDoctor}]]', // ajax请求路径
+                data: formData,
+                cache : true,
+                async:false,
+                contentType: false,   //jax 中 contentType 设置为 false 是为了避免 JQuery 对其操作，从而失去分界符，而使服务器不能正常解析文件
+                processData: false,
+                success: function(data){
+                    if(data.state==1){
+                        layer.msg(data.message,{
+                            time:2000,
+                            end:function () {
+                                location.reload();
+                            }
+                        })
+                        return false;
+                    }else {
+                        layer.msg(data.message);
+                        return false;
+                    }
+                }
+            });
+
+            return false;
+        });
+
+
+        form.on('submit(addAdmin)', function(data){
+            $.ajax({
+                type: 'post',
+                url: '[[@{/admin/addAdmin}]]', // ajax请求路径
+                data: {
+                    docName: data.field.adocName,
+                    adPassword: data.field.adPassword,
+                    rId: data.field.rId
+
+                },
+                dataType:'json',
+                async:false,
+                success: function(data){
+                    if(data.state==1){
+                        layer.msg(data.message,{
+                            time:2000,
+                            end:function () {
+                                location.reload();
+                            }
+                        })
+                        return false;
+                    }else {
+                        layer.msg(data.message);
+                        return false;
+                    }
+                }
+            });
+
+            return false;
+        });
+
+        $(document).on('click','#layerRole',function(){
+            loadindex = layer.load(1);
+            $.ajax({
+                type: 'post',
+                url: '[[@{/doctor/doctorSyn}]]', // ajax请求路径
+                data:{},
+                dataType:'json',
+
+                success: function(data){
+                    layer.close(loadindex);
+                    if(data.state==1){
+                        layer.msg(data.message,{
+                            time:2000,
+                            end:function () {
+
+                                location.reload();
+                            }
+                        })
+                        return false;
+                    }else {
+                        layer.close(loadindex);
+                        layer.msg(data.message);
+                        return false;
+                    }
+                }
+            });
+        });
+
+
+
+    });
+    //关闭提示
+    function closea() {
+        $('#autn').css('display', 'none');
+        $('#device').css('display', 'none');
+        $('#edit').css('display', 'none');
+    }
+    /*// function render(){
+    //     console.log("进入方法" +
+    //         "");
+    //     var json = '{"state":"ok","msg":"操作成功！","calendar":[{"id":1121,"title":"3344-  辅导辅导13 [ 津津]","start":"2019-11-22 15:30:00","remarks":"课程:3344-  辅导辅导13<br>校区:中心校区<br>教室:花样教室<br>教师:米桂<br>时间:15:30:00-16:00:00<br>课时:1<br>上课学员姓名:津津","end":"2019-11-22 16:00:00"}]}';
+    //     var s =  $.parseJSON( json );
+    //     $('#calendar').fullCalendar('renderEvents', s.calendar, true);//批量渲染事件到日程控件上
+    // }*/
+</script>
+
+</body>
+
+</html>

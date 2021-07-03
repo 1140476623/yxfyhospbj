@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理系统</title>
+    <link rel="shortcut icon" th:href="@{/favicon.ico}">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" type="text/css">
+    <script th:src="@{/js/jquery-1.8.2.min.js}" type="text/javascript"></script>
+    <script th:src="@{/js/common.js}" type="text/javascript"></script>
+    <script th:src="@{/layui/layui.js}" type="text/javascript"></script>
+    <script th:src="@{/js/jszip.js}" type="text/javascript"></script>
+    <script th:src="@{/js/FileSaver.min.js}" type="text/javascript"></script>
+    <link rel="stylesheet" th:href="@{/font-awesome/css/font-awesome.min.css}">
+    <style type="text/css">
+
+        .layui-body {
+            z-index: auto !important;
+        }
+
+        .layui-table thead tr, .layui-table-header {
+            color: #fff;
+            background-color: #5EA3E6;
+
+        }
+
+        .layui-table tbody {
+            height: 50px;
+        }
+
+        /*.layui-unselect {width:190px; }*/
+        #listGroup .layui-form-checkbox[lay-skin=primary] {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        .layui-table-tool-temp {
+            padding-right: 0;
+        }
+
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div th:replace="~{header :: copy}"></div>
+    <div th:replace="~{left :: leftpage}"></div>
+
+    <div class="layui-body">
+        <!--设备位置修改-->
+        <div class="layui-form" style="text-align: center">
+            <form lay-filter="" id="refundForm" style="display:none;" action="" method="post"
+                  enctype="multipart/form-data">
+                <div class="layui-row" style="margin-top: 30px;margin-left:20px; margin-right:20px;">
+                    <div class="layui-col-md6" style="text-align: center">
+                        <label>终端编号:</label>
+                        <span class="layui-inline">
+                        <input name="temp" class="layui-input" readonly id="temp"
+                               style="border-width: 0;"></span>
+                    </div>
+                    <div class="layui-col-md6" style="text-align: center">
+                        <label>终端MAC:</label>
+                        <span class="layui-inline">
+                        <input name="terminaliDentity" class="layui-input" readonly id="terminaliDentity"
+                               style="border-width: 0;"></span>
+                    </div>
+
+                    <div class="layui-col-md6" style="text-align: center">
+                        <label>当前位置:</label>
+                        <span class="layui-inline">
+                        <input name="terminaliAddres" readonly id="terminaliAddres" class="layui-input"
+                               style="border-width: 0;"></span>
+                    </div>
+                    <div class="layui-col-md6" style="text-align: center">
+                        <label>当前IP地址:</label>
+                        <span class="layui-inline">
+                        <input name="terminaliIp" readonly id="terminaliIp" class="layui-input"
+                               style="border-width: 0;"></span>
+                    </div>
+
+                </div>
+                <hr>
+                <div class="layui-input-inline">
+                    <label class="layui-form-label">位置</label>
+                    <div class="layui-input-block" style="margin-bottom : 10px">
+                        <input name="newAddress" id="newAddress" placeholder="输入位置" class="layui-input"
+                               type="text" lay-verify="required" style="margin-bottom : 10px;width: 280px">
+                    </div>
+                </div>
+                <hr>
+            </form>
+        </div>
+
+
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;">
+            <div id="doctorList">
+                <a href="" download id="download"></a>
+                <div class="layui-field-box">
+                    设备MAC：
+                    <div class="layui-inline">
+                        <input class="layui-input" name="depReload" id="depReload" autocomplete="off">
+                    </div>
+
+                    是否注册:
+                    <div class="layui-input-inline">
+
+                        <select id="facRegister" name="facRegister" lay-filter="role" class="layui-select"
+                                style="width:auto">
+                            <option value="">--请选择--</option>
+                            <option value="0">未注册</option>
+                            <option value="1">已注册</option>
+                        </select>
+                    </div>
+
+                    是否在线:
+                    <div class="layui-input-inline">
+
+                        <select id="facState" name="facState" lay-filter="role" class="layui-select" style="width:auto">
+                            <option value="">--请选择--</option>
+                            <option value="0">未在线</option>
+                            <option value="1">已在线</option>
+                        </select>
+                    </div>
+                    <button id="demoTable" class="layui-btn" data-type="reload">
+                        <i class="layui-icon layui-icon-search" style="font-size: 15px; "></i>搜索
+                    </button>
+                    <button class="layui-btn" id="reset1">
+                        <i class="layui-icon layui-icon-refresh" style="font-size: 15px; "></i>重置刷新
+                    </button>
+                </div>
+                <table class="layui-hide" id="test" lay-filter="test"></table>
+            </div>
+
+            <div id="doctorMsg" class="layui-form" style="margin-top: 10px ;display: none;">
+                <form action="" method="post" enctype="multipart/form-data" id="signupForm1">
+                    <div style="height: 40px">
+                        <div style="float:left;width: 4px;height: 25px; background:  #5EA3E6;margin-right: 5px;margin-top: 10px"></div>
+                        <h2 style="display: inline-block; font-weight: 600;margin-top: 10px">版本信息</h2><span
+                            style="margin-top: 10px;color: #EB5B5B;display: inline-block; margin-left: 10px;font-weight: 600;"></span>
+                        <!--                    <button id="resetButton" class="layui-btn layui-btn-primary" style="float: right;margin-right: 30px"><i class="layui-icon layui-icon-fonts-clear" style="font-size: 15px; "></i>重置</button>-->
+                        <button class="layui-btn " id="rolback" style="float: right">返回</button>
+                    </div>
+                    <hr class="layui-bg-blue">
+                    <textarea name="" placeholder="请输入" class="layui-textarea"></textarea>
+                </form>
+            </div>
+
+            <!-- 新增 -->
+            <div style="width: 400px; position: relative; left: 20%; display: none;" id="autn">
+
+                <form class="layui-form layui-form-pane" action="">
+
+                    <div class="layui-form-item" style="margin-left:10%;margin-top: 10px">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">开机时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="uptime" name="uptime" placeholder="HH:mm:ss">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item" style="margin-left:10%">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">关机时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="offtime" name="offtime"
+                                       placeholder="HH:mm:ss">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" style="float: bottom">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="addRole">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary"
+                                    style="background-color: #CCCCCC;color: #0D0D0D !important;">重置
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+            <!-- 编辑 -->
+            <div style="width: 400px; position: relative; left: 20%; display: none;" id="eait">
+                <form class="layui-form layui-form-pane" action="">
+                    <div style="margin-top: 50px;">声音大小:
+                        <div id="slideTest1" style="width: 300px;float: right;margin-top: 10px;"></div>
+                    </div>
+                    <input type="hidden" id="voice" name="voice">
+                    <div class="layui-form-item" style="margin-top: 30px">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="addvoice">立即提交</button>
+                            <button type="reset" class="layui-btn layui-btn-primary"
+                                    style="background-color: #CCCCCC;color: #0D0D0D !important;">重置
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <input type="file" name="file" id="facfile" style="display:none">
+        <input type="file" name="files" id="facup" style="display:none">
+        <div>
+        </div>
+    </div>
+
+
+</div>
+<div class="group layui-layer-wrap">
+    <div id="group" class="layui-form" style="display:none">
+        <div class="layui-input-block" id="listGroup" style="margin: 25px !important;">
+
+        </div>
+    </div>
+</div>
+<input type="hidden" th:value="${#session.id}" id="sid">
+<input type="hidden" th:value="${pagelogo}" id="iden">
+<script type="text/html" id="barDemo">
+    <!--<a class="layui-btn layui-btn-xs" lay-event="modifly">版本信息</a>-->
+    <a class="layui-btn layui-btn-xs" lay-event="push">截屏</a>
+    <a class="layui-btn layui-btn-xs" lay-event="logs">日志下载</a>
+</script>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+
+        <button class="layui-btn  layui-btn-sm" lay-event="export" style="font-size: 15px">
+            <img th:src="@{/image/export.ico}" style="width: 15px;height: 15px;">导出
+        </button>
+        <button class="layui-btn layui-btn-warm layui-btn-sm" style="font-size: 15px" lay-event="lead">
+            <img th:src="@{/image/import.ico}" style="width: 15px;height: 15px;">导入
+        </button>
+        <button class="layui-btn layui-btn-sm" lay-event="upgrade" style="float:right">升级</button>
+        <button class="layui-btn layui-btn-sm" lay-event="restart" style="float: right">重启</button>
+        <!--<button class="layui-btn layui-btn-sm" lay-event="timing" style="float: right">定时开关机</button>-->
+        <!--<button class="layui-btn layui-btn-sm" lay-event="voice" style="float: right">声音控制</button>-->
+    </div>
+</script>
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>
+
+<script type="text/html" id="caStickModel">
+    <div>
+        <input type="checkbox" value={{d.facManage}} lay-skin="switch" lay-filter="switchTest" lay-text="启用|禁用" {{
+               d.facManage== '1' ? 'checked' : '' }} >
+    </div>
+</script>
+
+<script type="text/html" id="caStickModel1">
+    <div>
+        <input type="checkbox" value={{d.isVoice}} lay-skin="switch" lay-filter="switchTest1" lay-text="启用|禁用" {{
+               d.isVoice== '1' ? 'checked' : '' }} >
+    </div>
+</script>
+
+<script type="text/html" id="goimage">
+    <div>
+        {{# if(d.shotLink == null || d.shotLink==""){ }}
+        <span>暂无</span>
+        {{# }else { }}
+        <img src="{{d.shotLink}}" onclick="check(this)">
+        {{# } }}
+    </div>
+</script>
+
+<script language="javascript" type="text/javascript">
+  //字符串替换所有方法
+  String.prototype.replaceAll = function (FindText, RepText) {
+    var regExp = new RegExp(FindText, "g");
+    return this.replace(regExp, RepText);
+  }
+</script>
+
+
+<script type="text/html" id="caModel">
+    {{# if(d.facState == 1 && d.sysType == 0){ }}
+    <div class="fa fa-android fa-2x" style="color:green"></div>
+    {{# }else if(d.facState == 0 && d.sysType == 0){ }}
+    <div class="fa fa-android fa-2x" style="color:red"></div>
+    {{# }else if(d.facState == 1 && d.sysType == 1){ }}
+    <div class="fa fa-windows fa-2x" style="color:green"></div>
+    {{# }else if(d.facState == 0 && d.sysType == 1){ }}
+    <div class="fa fa-windows fa-2x" style="color:red"></div>
+    {{# } }}
+</script>
+
+
+<script>
+
+  var iden = $("#iden").val();
+  console.log(iden);
+  showthis(iden);
+
+
+  layui.use(['laytpl', 'laypage', 'table', 'element', 'layer', 'jquery', 'form', 'upload', 'laydate', 'slider'], function () {
+      var table = layui.table,
+        element = layui.element,
+        $ = layui.jquery,
+        form = layui.form,
+        layer = layui.layer,
+        upload = layui.upload,
+        laytpl = layui.laytpl,
+        laydate = layui.laydate,
+        slider = layui.slider;
+      var loadindex = null;
+
+
+      table.render({
+        id: 'testReload',
+        elem: '#test',
+        url: '[[@{/facility/facilityList}]]',
+        title: '用户数据表',
+        skin: 'nob',
+        toolbar: '#toolbarDemo',
+        defaultToolbar: [],
+        where: {
+          type: 7
+        },
+        cols: [
+          [
+            {type: 'checkbox'},
+            {field: 'zizeng', type: 'numbers', title: '序号', style: 'height:60px;'},
+            {field: 'id', title: 'id', hide: 'true'},
+            {field: 'temp', title: '终端编号', align: "center"},
+            {field: 'facIp', title: 'IP地址', align: "center"},
+            {
+              field: 'facAddres', title: "地址", align: "center", templet: function (d) {
+                return (d.facAddres == null ? "暂无" : d.facAddres) + '&nbsp;&nbsp;&nbsp;' +
+                  '<a lay-event="address" class="layui-icon layui-icon-set-fill" ' +
+                  'style="font-size: 15px; color: #0d8ddb;" href="javascript:void(0)"></a>'
+              }
+            },
+            // {field: 'facVersion', title: '软件版本', align: "center"},
+            {
+              field: 'facRegister', title: '是否注册', align: "center", templet: function (d) {
+                if (d.facRegister == 0) {
+                  return "已到期或未注册";
+                } else if (d.facRegister < 0) {
+                  return "不限制"
+                } else if (d.facRegister > 0) {
+                  return d.facRegister + "天"
+                }
+              }
+            },
+            {field: 'facState', title: '设备状态', align: "center", templet: '#caModel', unresize: true,},
+            // {
+            //   field: 'printInfo',
+            //   title: '外设状态',
+            //   width: "13%",
+            //   align: "center",
+            //   templet: function (d) {
+            //     //外设对象
+            //     var arr = d.printInfo;
+            //     //把所有外设状态放入到一个空数组中
+            //     var arrStatus = [];
+            //     for (var i = 0; i < arr.length; i++) {
+            //       arrStatus.push(arr[i].status);
+            //     }
+            //     if (arr.length <= 0) {
+            //       return '暂无外设';
+            //     } else {
+            //       //需要把对象转换为json字符串
+            //       var json = JSON.stringify(d);
+            //       //把双引号替换成单引号,后面才能正确的转换为对象
+            //       var data = json.replaceAll("\"", "'");
+            //       if (isAllEqual(arrStatus) && !isZero(arrStatus)) {  //外设都正常
+            //         return '<i class="layui-icon layui-icon-circle-dot" style="font-size: 12px; color: #00FF00;">' +
+            //           '</i>&nbsp;&nbsp;正常&nbsp;&nbsp;&nbsp;' + '<a id="tip1" style="color: #0d8ddb"  data-content="' + data + '" href="javascript:void(0)">更多</a>';
+            //       } else if (isAllEqual(arrStatus) && isZero(arrStatus)) {   //都不正常
+            //         return '<i class="layui-icon layui-icon-circle-dot" style="font-size: 12px; color: red;">' +
+            //           '</i>&nbsp;&nbsp;全部异常&nbsp;&nbsp;&nbsp;</span>' + '<a id="tip2" data-content="' + data + '" style="color: #0d8ddb" href="javascript:void(0)">更多</a>';
+            //       } else {  //部分正常
+            //         return '<i class="layui-icon layui-icon-circle-dot" style="font-size: 12px; color: red;">' +
+            //           '</i>&nbsp;&nbsp;部分异常&nbsp;&nbsp;&nbsp;</span>' + '<a id="tip3" data-content="' + data + '" style="color: #0d8ddb; " href="javascript:void(0)">更多</a>';
+            //       }
+            //     }
+            //   }
+            // },
+            {field: 'shotLink', title: '截屏展示', align: "center", templet: '#goimage', style: 'height:60px;'},
+            {field: 'facManage', title: '是否启用', align: "center", templet: '#caStickModel', unresize: true},
+            {title: '操作', align: "center", toolbar: '#barDemo'}
+          ]
+        ]
+        , page: true
+      });
+
+
+      //鼠标移动事件展示外设状态
+      var tip_index = 0;
+      $(document).on('mouseenter', "a[id^='tip']", function () {
+        //通过id通配前缀为tip，再通过$(this)的this指向的就是当前触发事件的节点本身。
+        var content = $(this).data('content');
+        //在双引号替换成单引号，再转换成对象
+        var data = JSON.parse(content.replaceAll("'", "\""));
+        var res = data.printInfo;
+        //获取uuid作为tips的id，避免重复弹出无数据的tip
+        var uuid = (new Date()).getTime();
+        var html = "<div class='layui-row' id='" + uuid + "' style='color:#000;width: 320px;text-align: center'><span class='layui-col-md6'>终端编号：" + data.temp +
+          "</span><span class='layui-col-md6'>" + "位置：" + data.facAddres + "</span><div class='layui-row'>" +
+          "<hr style='width: 320px' class='layui-bg-blue'><span class='layui-col-md4'>外设名称</span><span class='layui-col-md4'>当前状态</span>" +
+          "<span class='layui-col-md4'>详情</span></div></div>";
+        //定义弹出的tip层
+        tip_index = layer.tips(html, this, {tips: [3, '#ECF5FF'], time: 0, area: 'auto', maxWidth: 350});
+        $.each(res, function (index, item) {
+          html = "<div class='layui-row'>" +
+            "<span class='layui-col-md4'>" + item.printType + "</span>" +
+            "<span class='layui-col-md4'>" + (item.status == 1 ? "<i class='layui-icon layui-icon-circle-dot' style='font-size: 12px; color: #00FF00;'></i>"
+              : "<i class='layui-icon layui-icon-circle-dot' style='font-size: 12px; color: red;'></i>") + "</span>" +
+            "<span class='layui-col-md4'>" + (item.reason == null || item.reason == '' ? '正常' : item.reason) + "</span>" +
+            "</div>";
+          $("#" + uuid).append(html);
+        });
+      }).on('mouseleave', "a[id^='tip']", function () {
+        //鼠标离开关闭tip层
+        layer.close(tip_index);
+      });
+
+      //判断数组中所有的元素是否相等
+      function isAllEqual(array) {
+        if (array.length > 0) {
+          return !array.some(function (value, index) {
+            return value !== array[0];
+          });
+        } else {
+          return true;
+        }
+      }
+
+      //判断数组中是否有零
+      function isZero(array) {
+        var isZero = false;
+        for (var i = 0; i < array.length; i++) {
+          if (array[i] === 0) {
+            isZero = true;
+            break;
+          }
+        }
+        return isZero;
+      }
+
+
+      $('#reset1').on('click', function () {
+        $('#depReload').val(""),
+          $('#facRegister').val(""),
+          $('#facState').val("")
+        active.reload();
+      });
+
+
+      form.on('switch(switchTest)', function (data) {
+        var flag = null;
+        // 获取当前控件
+        var selectIfKey = data.othis;
+        // 获取当前所在行
+        var parentTr = selectIfKey.parents("tr");
+        var dataField = $(parentTr).find("td:eq(2)").find(".layui-table-cell").text();
+        console.log(dataField);
+        if (data.elem.checked === true) {
+          flag = 1;
+        }
+        if (data.elem.checked === false) {
+          flag = 0;
+        }
+        console.log(flag);
+        $.ajax({
+          type: 'post',
+          url: '[[@{/facility/modiflyManage}]]', // ajax请求路径
+          data: {
+            id: dataField,
+            facManage: flag
+          },
+          dataType: 'json',
+          async: false,
+          success: function (data) {
+            if (data.state === 1) {
+              return layer.msg(data.message);
+            } else {
+              return layer.msg(data.message);
+            }
+          }
+        });
+        return false;
+      });
+
+      form.on('switch(switchTest1)', function (data) {
+        var flag = null;
+        // 获取当前控件
+        var selectIfKey = data.othis;
+        // 获取当前所在行
+        var parentTr = selectIfKey.parents("tr");
+        var dataField = $(parentTr).find("td:eq(2)").find(".layui-table-cell").text();
+
+        if (data.elem.checked === true) {
+          flag = 1;
+        }
+        if (data.elem.checked === false) {
+          flag = 0;
+        }
+
+        $.ajax({
+          type: 'post',
+          url: '[[@{/facility/voiceManage}]]', // ajax请求路径
+          data: {
+            id: dataField,
+            facManage: flag
+          },
+          dataType: 'json',
+          async: false,
+          success: function (data) {
+            if (data.state == 1) {
+              return layer.msg(data.message);
+            } else {
+              layer.msg(data.message, {
+                time: 1000,
+                end: function () {
+                  location.reload();
+                }
+              })
+            }
+          }
+        });
+      });
+      var upid = [];
+      var voice = "0%";
+      slider.render({
+        elem: '#slideTest1'
+        , setTips: function (value) { //自定义提示文本
+          voice = value + "%";
+          return value + '%';
+
+        }
+      });
+
+      var checkboxid = [];
+
+
+      //导出
+      table.on('toolbar(test)', function (obj) {
+        var checkStatus = table.checkStatus('testReload');
+        switch (obj.event) {
+          case 'export':
+            var data = checkStatus.data;
+            var dataid = [];
+            for (var i = 0; i < data.length; i++) {
+              dataid.push(data[i].id);
+            }
+            if (dataid.length != 0 || data.length != 0) {
+              $.ajax({
+                type: 'post',
+                url: '[[@{/facility/exportFile}]]', // ajax请求路径
+                data: {
+                  id: dataid
+                },
+                traditional: true,
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                  if (data.state == 1) {
+                    layer.msg('导出成功', {
+                      time: 10000,
+                      end: function () {
+                        location.reload();
+                      }
+                    })
+                    $('#download').attr('href', data.data[0]);
+                    document.getElementById('download').click();
+                  } else {
+                    return layer.msg('导出失败');
+                  }
+                }
+              });
+            } else {
+              layer.msg('请选择数据');
+            }
+            break;
+          case 'lead':
+            var data = checkStatus.data;
+            var dataid = [];
+            for (var i = 0; i < data.length; i++) {
+              dataid.push(data[i].id);
+            }
+            $('#facfile').click();
+            break;
+          case 'timing':
+            var data = checkStatus.data;
+            var dataid = [];
+            checkboxid = [];
+            for (var i = 0; i < data.length; i++) {
+              dataid.push(data[i].id);
+              checkboxid.push(data[i].id);
+            }
+            if (dataid.length != 0 || data.length != 0) {
+              index = layer.open({
+                type: 1,
+                area: ['600px', '400px'],
+                title: '重启时间设定',
+                skin: 'layui-layer-demo', //加上边框
+                content: $('#autn')
+              });
+              //设置位置
+              layer.style(index, {
+                top: '150px'
+              });
+            } else {
+              layer.msg('请选择数据');
+            }
+            break;
+          case 'voice':
+            var data = checkStatus.data;
+            var dataid = [];
+            checkboxid = [];
+            for (var i = 0; i < data.length; i++) {
+              dataid.push(data[i].id);
+              checkboxid.push(data[i].id);
+            }
+            if (dataid.length != 0 || data.length != 0) {
+              index = layer.open({
+                type: 1,
+                area: ['600px', '400px'],
+                title: '声音大小设定',
+                skin: 'layui-layer-demo', //加上边框
+                content: $('#eait')
+              });
+              //设置位置
+              layer.style(index, {
+                top: '150px'
+              });
+            } else {
+              layer.msg('请选择数据');
+            }
+            break;
+          case 'restart':
+            var data = checkStatus.data;
+            var dataid = [];
+
+            for (var i = 0; i < data.length; i++) {
+              dataid.push(data[i].id);
+            }
+
+            if (dataid.length != 0 || data.length != 0) {
+              $.ajax({
+                type: 'post',
+                url: '[[@{/facility/restart}]]', // ajax请求路径
+                data: {
+                  id: dataid
+                },
+                traditional: true,
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                  if (data.state == 1) {
+                    layer.msg(data.message, {
+                      time: 10000,
+                      end: function () {
+                        location.reload();
+                      }
+                    })
+
+                  } else {
+                    return layer.msg(data.message);
+                  }
+                }
+              });
+            } else {
+              layer.msg('请选择数据');
+            }
+            break;
+          case 'upgrade':
+            var data = checkStatus.data;
+            var dataid = [];
+
+            for (var i = 0; i < data.length; i++) {
+
+              upid.push(data[i].id);
+            }
+            if (upid.length != 0 || data.length != 0) {
+              $('#facup').click();
+            } else {
+              layer.msg('请选择数据');
+            }
+        }
+      });
+
+
+      upload.render({
+        elem: '#facup'
+        , url: '[[@{/facility/upgrade}]]'
+        , accept: 'file' //普通文件
+        , data: {idz: upid}
+        , done: function (data) {
+          if (data.state == 1) {
+
+            layer.msg(data.message, {
+              time: 1000,
+              end: function () {
+                location.reload();
+              }
+            })
+
+          } else {
+            return layer.msg(data.message);
+          }
+        }
+      });
+
+      form.on('submit(addvoice)', function (data) {
+
+        $.ajax({
+          type: 'post',
+          url: '[[@{/facility/addvoice}]]', // ajax请求路径
+          data: {
+            id: checkboxid,
+            voice: voice
+          },
+          dataType: 'json',
+          async: false,
+          success: function (data) {
+            if (data.state == 1) {
+              layer.msg(data.message, {
+                time: 2000,
+                end: function () {
+                  location.reload();
+                }
+              })
+              return false;
+            } else {
+              layer.msg(data.message);
+              return false;
+            }
+          }
+        });
+
+        return false;
+      });
+      form.on('submit(addRole)', function (data) {
+        $.ajax({
+          type: 'post',
+          url: '[[@{/facility/timing}]]', // ajax请求路径
+          data: {
+            id: checkboxid,
+            starTime: data.field.uptime,
+            endTime: data.field.offtime
+
+          },
+          dataType: 'json',
+          async: false,
+          success: function (data) {
+            if (data.state == 1) {
+              layer.msg(data.message, {
+                time: 2000,
+                end: function () {
+                  location.reload();
+                }
+              })
+              return false;
+            } else {
+              layer.msg(data.message);
+              return false;
+            }
+          }
+        });
+
+        return false;
+      });
+
+      $(document).on('click', '#layerRole', function () {
+        index = layer.open({
+          type: 1,
+          area: ['600px', '400px'],
+          title: '时间段设定',
+          skin: 'layui-layer-demo', //加上边框
+          content: $('#autn')
+        });
+        //设置位置
+        layer.style(index, {
+          top: '150px'
+        });
+      });
+      //指定允许上传的文件类型
+      var uploadInst = upload.render({
+        elem: '#facfile'
+        , url: '[[@{/facility/leadFile}]]'
+        , accept: 'file' //普通文件
+        , done: function (res) {
+          if (res.state == 1) {
+            layer.msg(res.message, {
+              time: 1000,
+              end: function () {
+                location.reload();
+              }
+            })
+          } else {
+            return layer.msg(res.message);
+          }
+        }
+      });
+
+//多图片上传
+      var uploadInst = upload.render({
+        elem: '#test2'     /*根据绑定id，打开本地图片*/
+        , url: '${ctx}/origin/user/saveOrUpdate'  /*上传后台接受接口*/
+        , auto: false        /*true为选中图片直接提交，false为不提交根据bindAction属性上的id提交*/
+        , multiple: true
+        , bindAction: '#formSubmit'   /*提交图片*/
+        , choose: function (obj) {
+          //预读本地文件示例，不支持ie8
+          obj.preview(function (index, file, result) {
+            $('#demo2').append('<img src="' + result + '" alt="' + file.name + '" class="layui-upload-img" style="width: 98px;height: 98px;margin: 5px">')
+          });
+        }
+        , done: function (res) {
+          //如果上传失败
+          if (res.code > 0) {
+            return layer.msg('上传失败');
+          }
+          //上传成功
+        }
+        , error: function () {
+          //演示失败状态，并实现重传
+          var demoText = $('#demoText');
+          demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+          demoText.find('.demo-reload').on('click', function () {
+            uploadInst.upload();
+          });
+        }
+      });
+
+
+      $(document).on('click', '#rolback', function () {
+        location.replace('[[@{/doctor/showdoctor}]]');
+      });
+
+
+      var active = {
+        reload: function () {
+          //执行重载
+          table.reload('testReload', {
+            page: {
+              curr: 1 //重新从第 1 页开始
+            }
+            , where: {
+              facDid: $("#depReload").val(),
+              register: $('#facRegister').val(),
+              state: $('#facState').val()
+            }
+          });
+        }
+      };
+
+      $('#demoTable').on('click', function () {
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+      });
+
+
+      //监听行工具事件
+      table.on('tool(test)', function (obj) {
+        var data = obj.data;
+        var aid = data['id'];
+        var terminaliDentity = data["facMacid"];
+        var terminaliAddres = data["facAddres"];
+        var terminaliIp = data["facIp"];
+        var temp = data["temp"];
+        if (obj.event == 'push') {
+
+          if (data['facState'] == 0) {
+            return layer.msg('未上线设备不能截屏');
+          }
+
+          if (data['facManage'] == 0) {
+            return layer.msg('该设备未启用');
+          }
+          loadindex = layer.load(1);
+          $.ajax({
+            type: 'post',
+            url: '[[@{/facility/sendScreen}]]', // ajax请求路径
+            data: {
+              fid: aid,
+              sessionId: $('#sid').val()
+            },
+            dataType: 'json',
+
+            success: function (data) {
+              if (data.state == 1) {
+                layer.close(loadindex);
+                return layer.msg(data.message);
+              } else {
+                layer.close(loadindex);
+                return layer.msg('操作失败,' + data.message);
+              }
+            }
+          });
+        }
+        if (obj.event == 'modifly') {
+          $("#doctorList").css("display", "none");
+          $("#doctorMsg").css("display", "block");
+        }
+        if (obj.event == 'logs') {
+          if (data['facState'] == 0) {
+            return layer.msg('未上线设备不能下载日志');
+          }
+          if (data['facManage'] == 0) {
+            return layer.msg('该设备未启用');
+          }
+          loadindex = layer.load(1);
+          $.ajax({
+            type: 'post',
+            url: '[[@{/upload/uploadLog}]]', // ajax请求路径
+            data: {
+              fid: aid,
+              sessionId: $('#sid').val()
+            },
+            dataType: 'json',
+
+            success: function (data) {
+              if (data.state == 1) {
+
+              } else {
+                return layer.msg('操作失败');
+              }
+              layer.close(loadindex);
+            }
+          });
+        }
+        if (obj.event == 'address') {
+          $("#newAddress").val('');
+          layer.open({
+            type: 1,
+            title: false,
+            shadeClose: false,           //弹出框之外的地方是否可以点击
+            area: ['45%', '35%'],
+            content: $('#refundForm'),
+            closeBtn: 1,   //右上角的取消按钮
+            skin: 'myskin',
+            shade: 0.1,
+            btn: ['保存', '取消'],
+            btnAlign: 'c',  //按钮居中
+            success: function (layero, index) {
+              $("#terminaliDentity").val(terminaliDentity);
+              $("#terminaliAddres").val(terminaliAddres);
+              $("#terminaliIp").val(terminaliIp);
+              $("#temp").val(temp);
+            },
+            btn2: function (index, layero) {
+              layer.closeAll();
+              //清空表格
+              $("#newAddress").val('');
+
+            },
+            btn1: function (index, layero) {
+              var newAddress = $("#newAddress").val().trim();
+              if (newAddress == '' || newAddress == null || str == undefined) {
+                layer.msg("位置不能为空,请输入位置", {time: 1500});
+                return false;
+              }
+              $.ajax({
+                type: "post",
+                url: "[[@{/facility/saveAddress}]]",
+                data: {
+                  newAddress: newAddress,
+                  terminaliDentity: terminaliDentity
+                },
+                dataType: "json",
+                success: function (result) {
+                  if (result.state == 200) {
+                    layer.msg(result.msg, {
+                      time: 1000,
+                      end: function () {
+                        parent.location.reload();
+                      }
+                    });
+                  } else {
+                    layer.msg(result.msg, {
+                      time: 1000,
+                      end: function () {
+                        parent.location.reload();
+                      }
+                    });
+                  }
+                  layer.close(index);
+                }
+              });
+            },
+          });
+        }
+        if (obj.event == 'tip') {
+          var res = obj.data.printInfo;
+          var uuid = new Date().getTime();
+          var html = "<div class='layui-row' id='" + uuid + "' style='color:#000;width: 320px;text-align: center'><span class='layui-col-md6'>终端编号：" + data.temp +
+            "</span><span class='layui-col-md6'>" + "位置：" + data.terminaliAddres + "</span><div class='layui-row'>" +
+            "<hr style='width: 320px' class='layui-bg-blue'><span class='layui-col-md4'>外设名称</span><span class='layui-col-md4'>当前状态</span>" +
+            "<span class='layui-col-md4'>详情</span></div></div>";
+          //定义弹出的tip层
+          layer.tips(html, this, {tips: [3, '#ECF5FF'], time: 1000, area: 'auto', maxWidth: 350});
+          $.each(res, function (index, item) {
+            html = "<div class='layui-row'>" +
+              "<span class='layui-col-md4'>" + item.printType + "</span>" +
+              "<span class='layui-col-md4'>" + (item.status == 1 ? "<i class='layui-icon layui-icon-circle-dot' style='font-size: 12px; color: #00FF00;'></i>"
+                : "<i class='layui-icon layui-icon-circle-dot' style='font-size: 12px; color: red;'></i>") + "</span>" +
+              "<span class='layui-col-md4'>" + (item.reason == null || item.reason == '' ? '正常' : item.reason) + "</span>" +
+              "</div>";
+            $("#" + uuid).append(html);
+          });
+        }
+      });
+
+      //时间选择器
+      laydate.render({
+        elem: '#uptime'
+        , type: 'time'
+        , format: 'HH:mm'
+      });
+
+      //时间选择器
+      laydate.render({
+        elem: '#offtime'
+        , type: 'time'
+        , format: 'HH:mm'
+      });
+      //时间选择器
+      laydate.render({
+        elem: '#astartTime'
+        , type: 'time'
+        , format: 'HH:mm'
+      });
+
+      //时间选择器
+      laydate.render({
+        elem: '#aendTime'
+        , type: 'time'
+        , format: 'HH:mm'
+      });
+
+//监听提交
+      form.on('submit(modiAdmin)', function (data) {
+        var formData = new FormData($("#signupForm")[0]);
+        $.ajax({
+          type: 'post',
+          url: '[[@{/doctor/modiDoctor}]]', // ajax请求路径
+          data: formData,
+          cache: true,
+          async: false,
+          contentType: false,   //jax 中 contentType 设置为 false 是为了避免 JQuery 对其操作，从而失去分界符，而使服务器不能正常解析文件
+          processData: false,
+          success: function (data) {
+            if (data.state == 1) {
+              layer.msg(data.message, {
+                time: 2000,
+                end: function () {
+                  location.reload();
+                }
+              });
+              return false;
+            } else {
+              layer.msg(data.message);
+              return false;
+            }
+          }
+        });
+
+        return false;
+      });
+
+
+      form.on('submit(addAdmin)', function (data) {
+        $.ajax({
+          type: 'post',
+          url: '[[@{/admin/addAdmin}]]', // ajax请求路径
+          data: {
+            docName: data.field.adocName,
+            adPassword: data.field.adPassword,
+            rId: data.field.rId
+
+          },
+          dataType: 'json',
+          async: false,
+          success: function (data) {
+            if (data.state == 1) {
+              layer.msg(data.message, {
+                time: 2000,
+                end: function () {
+                  location.reload();
+                }
+              })
+              return false;
+            } else {
+              layer.msg(data.message);
+              return false;
+            }
+          }
+        });
+
+        return false;
+      });
+
+
+      var socket;
+      if (typeof(WebSocket) == "undefined") {
+        console.log("您的浏览器不支持WebSocket");
+      } else {
+        console.log("您的浏览器支持WebSocket");
+        //实现化WebSocket对象，指定要连接的服务器地址与端口  建立连接
+        //等同于socket = new WebSocket();
+        var str = "[[${#session.getAttribute('serverUrl')}]]" + "/websocket/" + $('#sid').val();
+        var Newstr = str.replace("http", "ws");
+
+        socket = new WebSocket(Newstr);
+        //打开事件
+        socket.onopen = function () {
+          console.log("Socket 已打开");
+          //socket.send("这是来自客户端的消息" + location.href + new Date());
+        };
+        //获得消息事件
+        socket.onmessage = function (msg) {
+          console.log(msg.data);
+          if (msg.data != "pong") {
+            var data = JSON.parse(msg.data);
+            if (data.type == "screen") {
+              layer.close(loadindex);
+              layer.open({
+                title: '图片展示'
+                , content: '<div><img src="' + data.data + '" style="width:1000px; height:700px"></div>'
+                , offset: ['10%', '25%']
+                , area: ['1050px', '800px']
+              });
+            }
+
+            if (data.type == "logs") {
+              layer.close(loadindex);
+              console.log("进入方法");
+              var zip = new JSZip();
+              var $html = "";
+              if (data.data != null) {
+                $.each(data.data, function (index, item) {
+                  zip.file(item.name, item.link, {binary: 'true'});
+                });
+
+                zip.generateAsync({type: "blob"}).then(function (content) {
+                  // content就是blob数据，这里以example.zip名称下载
+                  // 使用了FileSaver.js
+                  saveAs(content, getTime());
+                });
+              }
+            }
+          }
+          //发现消息进入    开始处理前端触发逻辑
+        };
+        //关闭事件
+        socket.onclose = function () {
+          console.log("Socket已关闭");
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+          alert("Socket发生了错误");
+          //此时可以尝试刷新页面
+        }
+        //离开页面时，关闭socket
+        //jquery1.8中已经被废弃，3.0中已经移除
+        // $(window).unload(function(){
+        //     socket.close();
+        //});
+      }
+    }
+  );
+
+  //关闭提示
+  function closea() {
+    $('#autn').css('display', 'none');
+    $('#device').css('display', 'none');
+    $('#edit').css('display', 'none');
+  }
+
+  function check(obj) {
+    //  点击后直接获取本点击对象
+
+    var name = obj.getAttribute("src");
+    layui.use(['layer'], function () {
+      layer = layui.layer;
+      layer.open({
+        title: '图片展示'
+        , content: '<div><img src="' + name + '"style="width:1000px; height:750px"></div>'
+        , area: ['1050px', '900px']
+      });
+    });
+  }
+</script>
+
+</body>
+
+</html>

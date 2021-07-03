@@ -1,0 +1,13 @@
+<div class="layui-header" th:fragment="copy"  xmlns:th="http://www.thymeleaf.org">
+    <div class="layui-logo" style="font-size:20px;color:white; margin-left: 25px">自助机后台管理系统</div>
+    
+    <!-- 头部区域（可配合layui已有的水平导航） --> 
+    <ul class="layui-nav layui-layout-right">
+      <li class="layui-nav-item">
+        <a href="javascript:;">
+        <span th:text="${#session.getAttribute('admin').adName }"></span>
+        </a>
+      </li>
+      <li class="layui-nav-item"><a th:href="@{/admin/exit}">退出</a></li>
+    </ul>
+  </div>

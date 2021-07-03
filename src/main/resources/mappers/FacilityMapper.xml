@@ -1,0 +1,825 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sjjd.doc.line.mapper.FacilityMapper">
+  <resultMap id="BaseResultMap" type="sjjd.doc.line.pojo.Facility">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="fac_macid" jdbcType="VARCHAR" property="facMacid" />
+    <result column="fac_encrypt" jdbcType="VARCHAR" property="facEncrypt" />
+    <result column="fac_decode" jdbcType="VARCHAR" property="facDecode" />
+    <result column="fac_number" jdbcType="VARCHAR" property="facNumber" />
+    <result column="fac_state" jdbcType="VARCHAR" property="facState" />
+    <result column="fac_manage" jdbcType="VARCHAR" property="facManage" />
+    <result column="fac_clientId" jdbcType="VARCHAR" property="facClientid" />
+    <result column="fac_room" jdbcType="VARCHAR" property="facRoom" />
+    <result column="fac_floor" jdbcType="VARCHAR" property="facFloor" />
+    <result column="fac_did" jdbcType="VARCHAR" property="facDid" />
+    <result column="fac_register" jdbcType="VARCHAR" property="facRegister" />
+    <result column="fac_ip" jdbcType="VARCHAR" property="facIp" />
+    <result column="fac_type" jdbcType="VARCHAR" property="facType" />
+    <result column="sys_type" jdbcType="VARCHAR" property="sysType" />
+    <result column="shot_link" jdbcType="VARCHAR" property="shotLink" />
+    <result column="fac_addres" jdbcType="VARCHAR" property="facAddres" />
+    <result column="v_id" jdbcType="VARCHAR" property="vId" />
+    <result column="is_voice" jdbcType="VARCHAR" property="isVoice" />
+    <result column="voice_size" jdbcType="VARCHAR" property="voiceSize" />
+    <result column="co_switch" jdbcType="VARCHAR" property="coSwitch" />
+    <result column="fac_area" jdbcType="VARCHAR" property="facArea" />
+    <result column="uptime" jdbcType="VARCHAR" property="uptime" />
+    <result column="offtime" jdbcType="VARCHAR" property="offtime" />
+    <result column="org_code" jdbcType="VARCHAR" property="orgCode" />
+    <result column="temp" jdbcType="VARCHAR" property="temp" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="sjjd.doc.line.pojo.Facility">
+    <result column="fac_version" jdbcType="LONGVARCHAR" property="facVersion" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, fac_macid, fac_encrypt, fac_decode, fac_number, fac_state, fac_manage, fac_clientId, 
+    fac_room, fac_floor, fac_did, fac_register, fac_ip, fac_type, sys_type, shot_link, 
+    fac_addres, v_id, is_voice, voice_size, co_switch, fac_area, uptime, offtime, org_code, 
+    temp
+  </sql>
+  <sql id="Blob_Column_List">
+    fac_version
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="sjjd.doc.line.pojo.FacilityExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from facility
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="sjjd.doc.line.pojo.FacilityExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from facility
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from facility
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from facility
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="sjjd.doc.line.pojo.FacilityExample">
+    delete from facility
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="sjjd.doc.line.pojo.Facility">
+    insert into facility (id, fac_macid, fac_encrypt, 
+      fac_decode, fac_number, fac_state, 
+      fac_manage, fac_clientId, fac_room, 
+      fac_floor, fac_did, fac_register, 
+      fac_ip, fac_type, sys_type, 
+      shot_link, fac_addres, v_id, 
+      is_voice, voice_size, co_switch, 
+      fac_area, uptime, offtime, 
+      org_code, temp, fac_version
+      )
+    values (#{id,jdbcType=INTEGER}, #{facMacid,jdbcType=VARCHAR}, #{facEncrypt,jdbcType=VARCHAR}, 
+      #{facDecode,jdbcType=VARCHAR}, #{facNumber,jdbcType=VARCHAR}, #{facState,jdbcType=VARCHAR}, 
+      #{facManage,jdbcType=VARCHAR}, #{facClientid,jdbcType=VARCHAR}, #{facRoom,jdbcType=VARCHAR}, 
+      #{facFloor,jdbcType=VARCHAR}, #{facDid,jdbcType=VARCHAR}, #{facRegister,jdbcType=VARCHAR}, 
+      #{facIp,jdbcType=VARCHAR}, #{facType,jdbcType=VARCHAR}, #{sysType,jdbcType=VARCHAR}, 
+      #{shotLink,jdbcType=VARCHAR}, #{facAddres,jdbcType=VARCHAR}, #{vId,jdbcType=VARCHAR}, 
+      #{isVoice,jdbcType=VARCHAR}, #{voiceSize,jdbcType=VARCHAR}, #{coSwitch,jdbcType=VARCHAR}, 
+      #{facArea,jdbcType=VARCHAR}, #{uptime,jdbcType=VARCHAR}, #{offtime,jdbcType=VARCHAR}, 
+      #{orgCode,jdbcType=VARCHAR}, #{temp,jdbcType=VARCHAR}, #{facVersion,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="sjjd.doc.line.pojo.Facility">
+    insert into facility
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="facMacid != null">
+        fac_macid,
+      </if>
+      <if test="facEncrypt != null">
+        fac_encrypt,
+      </if>
+      <if test="facDecode != null">
+        fac_decode,
+      </if>
+      <if test="facNumber != null">
+        fac_number,
+      </if>
+      <if test="facState != null">
+        fac_state,
+      </if>
+      <if test="facManage != null">
+        fac_manage,
+      </if>
+      <if test="facClientid != null">
+        fac_clientId,
+      </if>
+      <if test="facRoom != null">
+        fac_room,
+      </if>
+      <if test="facFloor != null">
+        fac_floor,
+      </if>
+      <if test="facDid != null">
+        fac_did,
+      </if>
+      <if test="facRegister != null">
+        fac_register,
+      </if>
+      <if test="facIp != null">
+        fac_ip,
+      </if>
+      <if test="facType != null">
+        fac_type,
+      </if>
+      <if test="sysType != null">
+        sys_type,
+      </if>
+      <if test="shotLink != null">
+        shot_link,
+      </if>
+      <if test="facAddres != null">
+        fac_addres,
+      </if>
+      <if test="vId != null">
+        v_id,
+      </if>
+      <if test="isVoice != null">
+        is_voice,
+      </if>
+      <if test="voiceSize != null">
+        voice_size,
+      </if>
+      <if test="coSwitch != null">
+        co_switch,
+      </if>
+      <if test="facArea != null">
+        fac_area,
+      </if>
+      <if test="uptime != null">
+        uptime,
+      </if>
+      <if test="offtime != null">
+        offtime,
+      </if>
+      <if test="orgCode != null">
+        org_code,
+      </if>
+      <if test="temp != null">
+        temp,
+      </if>
+      <if test="facVersion != null">
+        fac_version,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="facMacid != null">
+        #{facMacid,jdbcType=VARCHAR},
+      </if>
+      <if test="facEncrypt != null">
+        #{facEncrypt,jdbcType=VARCHAR},
+      </if>
+      <if test="facDecode != null">
+        #{facDecode,jdbcType=VARCHAR},
+      </if>
+      <if test="facNumber != null">
+        #{facNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="facState != null">
+        #{facState,jdbcType=VARCHAR},
+      </if>
+      <if test="facManage != null">
+        #{facManage,jdbcType=VARCHAR},
+      </if>
+      <if test="facClientid != null">
+        #{facClientid,jdbcType=VARCHAR},
+      </if>
+      <if test="facRoom != null">
+        #{facRoom,jdbcType=VARCHAR},
+      </if>
+      <if test="facFloor != null">
+        #{facFloor,jdbcType=VARCHAR},
+      </if>
+      <if test="facDid != null">
+        #{facDid,jdbcType=VARCHAR},
+      </if>
+      <if test="facRegister != null">
+        #{facRegister,jdbcType=VARCHAR},
+      </if>
+      <if test="facIp != null">
+        #{facIp,jdbcType=VARCHAR},
+      </if>
+      <if test="facType != null">
+        #{facType,jdbcType=VARCHAR},
+      </if>
+      <if test="sysType != null">
+        #{sysType,jdbcType=VARCHAR},
+      </if>
+      <if test="shotLink != null">
+        #{shotLink,jdbcType=VARCHAR},
+      </if>
+      <if test="facAddres != null">
+        #{facAddres,jdbcType=VARCHAR},
+      </if>
+      <if test="vId != null">
+        #{vId,jdbcType=VARCHAR},
+      </if>
+      <if test="isVoice != null">
+        #{isVoice,jdbcType=VARCHAR},
+      </if>
+      <if test="voiceSize != null">
+        #{voiceSize,jdbcType=VARCHAR},
+      </if>
+      <if test="coSwitch != null">
+        #{coSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="facArea != null">
+        #{facArea,jdbcType=VARCHAR},
+      </if>
+      <if test="uptime != null">
+        #{uptime,jdbcType=VARCHAR},
+      </if>
+      <if test="offtime != null">
+        #{offtime,jdbcType=VARCHAR},
+      </if>
+      <if test="orgCode != null">
+        #{orgCode,jdbcType=VARCHAR},
+      </if>
+      <if test="temp != null">
+        #{temp,jdbcType=VARCHAR},
+      </if>
+      <if test="facVersion != null">
+        #{facVersion,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="sjjd.doc.line.pojo.FacilityExample" resultType="java.lang.Long">
+    select count(*) from facility
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update facility
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.facMacid != null">
+        fac_macid = #{record.facMacid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facEncrypt != null">
+        fac_encrypt = #{record.facEncrypt,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facDecode != null">
+        fac_decode = #{record.facDecode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facNumber != null">
+        fac_number = #{record.facNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facState != null">
+        fac_state = #{record.facState,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facManage != null">
+        fac_manage = #{record.facManage,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facClientid != null">
+        fac_clientId = #{record.facClientid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facRoom != null">
+        fac_room = #{record.facRoom,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facFloor != null">
+        fac_floor = #{record.facFloor,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facDid != null">
+        fac_did = #{record.facDid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facRegister != null">
+        fac_register = #{record.facRegister,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facIp != null">
+        fac_ip = #{record.facIp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facType != null">
+        fac_type = #{record.facType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sysType != null">
+        sys_type = #{record.sysType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shotLink != null">
+        shot_link = #{record.shotLink,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facAddres != null">
+        fac_addres = #{record.facAddres,jdbcType=VARCHAR},
+      </if>
+      <if test="record.vId != null">
+        v_id = #{record.vId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isVoice != null">
+        is_voice = #{record.isVoice,jdbcType=VARCHAR},
+      </if>
+      <if test="record.voiceSize != null">
+        voice_size = #{record.voiceSize,jdbcType=VARCHAR},
+      </if>
+      <if test="record.coSwitch != null">
+        co_switch = #{record.coSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facArea != null">
+        fac_area = #{record.facArea,jdbcType=VARCHAR},
+      </if>
+      <if test="record.uptime != null">
+        uptime = #{record.uptime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.offtime != null">
+        offtime = #{record.offtime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orgCode != null">
+        org_code = #{record.orgCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.temp != null">
+        temp = #{record.temp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.facVersion != null">
+        fac_version = #{record.facVersion,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update facility
+    set id = #{record.id,jdbcType=INTEGER},
+      fac_macid = #{record.facMacid,jdbcType=VARCHAR},
+      fac_encrypt = #{record.facEncrypt,jdbcType=VARCHAR},
+      fac_decode = #{record.facDecode,jdbcType=VARCHAR},
+      fac_number = #{record.facNumber,jdbcType=VARCHAR},
+      fac_state = #{record.facState,jdbcType=VARCHAR},
+      fac_manage = #{record.facManage,jdbcType=VARCHAR},
+      fac_clientId = #{record.facClientid,jdbcType=VARCHAR},
+      fac_room = #{record.facRoom,jdbcType=VARCHAR},
+      fac_floor = #{record.facFloor,jdbcType=VARCHAR},
+      fac_did = #{record.facDid,jdbcType=VARCHAR},
+      fac_register = #{record.facRegister,jdbcType=VARCHAR},
+      fac_ip = #{record.facIp,jdbcType=VARCHAR},
+      fac_type = #{record.facType,jdbcType=VARCHAR},
+      sys_type = #{record.sysType,jdbcType=VARCHAR},
+      shot_link = #{record.shotLink,jdbcType=VARCHAR},
+      fac_addres = #{record.facAddres,jdbcType=VARCHAR},
+      v_id = #{record.vId,jdbcType=VARCHAR},
+      is_voice = #{record.isVoice,jdbcType=VARCHAR},
+      voice_size = #{record.voiceSize,jdbcType=VARCHAR},
+      co_switch = #{record.coSwitch,jdbcType=VARCHAR},
+      fac_area = #{record.facArea,jdbcType=VARCHAR},
+      uptime = #{record.uptime,jdbcType=VARCHAR},
+      offtime = #{record.offtime,jdbcType=VARCHAR},
+      org_code = #{record.orgCode,jdbcType=VARCHAR},
+      temp = #{record.temp,jdbcType=VARCHAR},
+      fac_version = #{record.facVersion,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update facility
+    set id = #{record.id,jdbcType=INTEGER},
+      fac_macid = #{record.facMacid,jdbcType=VARCHAR},
+      fac_encrypt = #{record.facEncrypt,jdbcType=VARCHAR},
+      fac_decode = #{record.facDecode,jdbcType=VARCHAR},
+      fac_number = #{record.facNumber,jdbcType=VARCHAR},
+      fac_state = #{record.facState,jdbcType=VARCHAR},
+      fac_manage = #{record.facManage,jdbcType=VARCHAR},
+      fac_clientId = #{record.facClientid,jdbcType=VARCHAR},
+      fac_room = #{record.facRoom,jdbcType=VARCHAR},
+      fac_floor = #{record.facFloor,jdbcType=VARCHAR},
+      fac_did = #{record.facDid,jdbcType=VARCHAR},
+      fac_register = #{record.facRegister,jdbcType=VARCHAR},
+      fac_ip = #{record.facIp,jdbcType=VARCHAR},
+      fac_type = #{record.facType,jdbcType=VARCHAR},
+      sys_type = #{record.sysType,jdbcType=VARCHAR},
+      shot_link = #{record.shotLink,jdbcType=VARCHAR},
+      fac_addres = #{record.facAddres,jdbcType=VARCHAR},
+      v_id = #{record.vId,jdbcType=VARCHAR},
+      is_voice = #{record.isVoice,jdbcType=VARCHAR},
+      voice_size = #{record.voiceSize,jdbcType=VARCHAR},
+      co_switch = #{record.coSwitch,jdbcType=VARCHAR},
+      fac_area = #{record.facArea,jdbcType=VARCHAR},
+      uptime = #{record.uptime,jdbcType=VARCHAR},
+      offtime = #{record.offtime,jdbcType=VARCHAR},
+      org_code = #{record.orgCode,jdbcType=VARCHAR},
+      temp = #{record.temp,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="sjjd.doc.line.pojo.Facility">
+    update facility
+    <set>
+      <if test="facMacid != null">
+        fac_macid = #{facMacid,jdbcType=VARCHAR},
+      </if>
+      <if test="facEncrypt != null">
+        fac_encrypt = #{facEncrypt,jdbcType=VARCHAR},
+      </if>
+      <if test="facDecode != null">
+        fac_decode = #{facDecode,jdbcType=VARCHAR},
+      </if>
+      <if test="facNumber != null">
+        fac_number = #{facNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="facState != null">
+        fac_state = #{facState,jdbcType=VARCHAR},
+      </if>
+      <if test="facManage != null">
+        fac_manage = #{facManage,jdbcType=VARCHAR},
+      </if>
+      <if test="facClientid != null">
+        fac_clientId = #{facClientid,jdbcType=VARCHAR},
+      </if>
+      <if test="facRoom != null">
+        fac_room = #{facRoom,jdbcType=VARCHAR},
+      </if>
+      <if test="facFloor != null">
+        fac_floor = #{facFloor,jdbcType=VARCHAR},
+      </if>
+      <if test="facDid != null">
+        fac_did = #{facDid,jdbcType=VARCHAR},
+      </if>
+      <if test="facRegister != null">
+        fac_register = #{facRegister,jdbcType=VARCHAR},
+      </if>
+      <if test="facIp != null">
+        fac_ip = #{facIp,jdbcType=VARCHAR},
+      </if>
+      <if test="facType != null">
+        fac_type = #{facType,jdbcType=VARCHAR},
+      </if>
+      <if test="sysType != null">
+        sys_type = #{sysType,jdbcType=VARCHAR},
+      </if>
+      <if test="shotLink != null">
+        shot_link = #{shotLink,jdbcType=VARCHAR},
+      </if>
+      <if test="facAddres != null">
+        fac_addres = #{facAddres,jdbcType=VARCHAR},
+      </if>
+      <if test="vId != null">
+        v_id = #{vId,jdbcType=VARCHAR},
+      </if>
+      <if test="isVoice != null">
+        is_voice = #{isVoice,jdbcType=VARCHAR},
+      </if>
+      <if test="voiceSize != null">
+        voice_size = #{voiceSize,jdbcType=VARCHAR},
+      </if>
+      <if test="coSwitch != null">
+        co_switch = #{coSwitch,jdbcType=VARCHAR},
+      </if>
+      <if test="facArea != null">
+        fac_area = #{facArea,jdbcType=VARCHAR},
+      </if>
+      <if test="uptime != null">
+        uptime = #{uptime,jdbcType=VARCHAR},
+      </if>
+      <if test="offtime != null">
+        offtime = #{offtime,jdbcType=VARCHAR},
+      </if>
+      <if test="orgCode != null">
+        org_code = #{orgCode,jdbcType=VARCHAR},
+      </if>
+      <if test="temp != null">
+        temp = #{temp,jdbcType=VARCHAR},
+      </if>
+      <if test="facVersion != null">
+        fac_version = #{facVersion,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="sjjd.doc.line.pojo.Facility">
+    update facility
+    set fac_macid = #{facMacid,jdbcType=VARCHAR},
+      fac_encrypt = #{facEncrypt,jdbcType=VARCHAR},
+      fac_decode = #{facDecode,jdbcType=VARCHAR},
+      fac_number = #{facNumber,jdbcType=VARCHAR},
+      fac_state = #{facState,jdbcType=VARCHAR},
+      fac_manage = #{facManage,jdbcType=VARCHAR},
+      fac_clientId = #{facClientid,jdbcType=VARCHAR},
+      fac_room = #{facRoom,jdbcType=VARCHAR},
+      fac_floor = #{facFloor,jdbcType=VARCHAR},
+      fac_did = #{facDid,jdbcType=VARCHAR},
+      fac_register = #{facRegister,jdbcType=VARCHAR},
+      fac_ip = #{facIp,jdbcType=VARCHAR},
+      fac_type = #{facType,jdbcType=VARCHAR},
+      sys_type = #{sysType,jdbcType=VARCHAR},
+      shot_link = #{shotLink,jdbcType=VARCHAR},
+      fac_addres = #{facAddres,jdbcType=VARCHAR},
+      v_id = #{vId,jdbcType=VARCHAR},
+      is_voice = #{isVoice,jdbcType=VARCHAR},
+      voice_size = #{voiceSize,jdbcType=VARCHAR},
+      co_switch = #{coSwitch,jdbcType=VARCHAR},
+      fac_area = #{facArea,jdbcType=VARCHAR},
+      uptime = #{uptime,jdbcType=VARCHAR},
+      offtime = #{offtime,jdbcType=VARCHAR},
+      org_code = #{orgCode,jdbcType=VARCHAR},
+      temp = #{temp,jdbcType=VARCHAR},
+      fac_version = #{facVersion,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="sjjd.doc.line.pojo.Facility">
+    update facility
+    set fac_macid = #{facMacid,jdbcType=VARCHAR},
+      fac_encrypt = #{facEncrypt,jdbcType=VARCHAR},
+      fac_decode = #{facDecode,jdbcType=VARCHAR},
+      fac_number = #{facNumber,jdbcType=VARCHAR},
+      fac_state = #{facState,jdbcType=VARCHAR},
+      fac_manage = #{facManage,jdbcType=VARCHAR},
+      fac_clientId = #{facClientid,jdbcType=VARCHAR},
+      fac_room = #{facRoom,jdbcType=VARCHAR},
+      fac_floor = #{facFloor,jdbcType=VARCHAR},
+      fac_did = #{facDid,jdbcType=VARCHAR},
+      fac_register = #{facRegister,jdbcType=VARCHAR},
+      fac_ip = #{facIp,jdbcType=VARCHAR},
+      fac_type = #{facType,jdbcType=VARCHAR},
+      sys_type = #{sysType,jdbcType=VARCHAR},
+      shot_link = #{shotLink,jdbcType=VARCHAR},
+      fac_addres = #{facAddres,jdbcType=VARCHAR},
+      v_id = #{vId,jdbcType=VARCHAR},
+      is_voice = #{isVoice,jdbcType=VARCHAR},
+      voice_size = #{voiceSize,jdbcType=VARCHAR},
+      co_switch = #{coSwitch,jdbcType=VARCHAR},
+      fac_area = #{facArea,jdbcType=VARCHAR},
+      uptime = #{uptime,jdbcType=VARCHAR},
+      offtime = #{offtime,jdbcType=VARCHAR},
+      org_code = #{orgCode,jdbcType=VARCHAR},
+      temp = #{temp,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectFacList" resultMap="facResultMap">
+    select
+    a.id aid, a.fac_macid, a.fac_encrypt, a.fac_decode, a.fac_number, a.fac_state, a.fac_manage, a.fac_clientId,
+    d.ro_name, a.fac_floor, b.dept_name, a.fac_register, a.fac_ip, a.fac_type, a.sys_type, a.shot_link,
+    a.fac_addres, c.vo_format, a.is_voice, a.voice_size, a.co_switch, a.fac_version, a.fac_area,a.uptime,a.offtime,d.ro_floor,d.ro_num,a.temp from
+    (
+    select id, fac_macid, fac_encrypt, fac_decode, fac_number, fac_state, fac_manage, fac_clientId,
+    fac_room, fac_floor, fac_did, fac_register, fac_ip, fac_type, sys_type, shot_link,
+    fac_addres, v_id, is_voice, voice_size, co_switch, fac_version, fac_area,uptime,offtime,org_code,temp from
+    facility f
+
+    )a left
+    join
+    department b
+    on
+    a.fac_did=b.id
+    left join
+    voice c
+    on
+    a.v_id=c.id
+    left join
+    room d
+    on
+    a.fac_room=d.id
+    <where>
+      <if test="facDid !=null and facDid != ''">
+        a.fac_macid  like CONCAT('%',#{facDid},'%')
+      </if>
+      <if test="register !=null and register != ''">
+        and
+        a.fac_register=#{register}
+      </if>
+      <if test="state !=null and state != ''">
+        and
+        a.fac_state=#{state}
+      </if>
+      <if test="type !=null and type != ''">
+        and
+        a.fac_type=#{type}
+      </if>
+      <if test="ids !=null and ids.size >0 ">
+        and a.org_code in
+        <foreach collection="ids" item="item" index="index"
+                 open="(" separator="," close=")">#{item}</foreach>
+      </if>
+
+    </where>
+    limit #{currentpage},#{perpage}
+
+  </select>
+
+
+  <resultMap id="facResultMap" type="sjjd.doc.line.pojo.Facility">
+    <id column="aid" jdbcType="INTEGER" property="id" />
+    <result column="fac_macid" jdbcType="VARCHAR" property="facMacid" />
+    <result column="fac_encrypt" jdbcType="VARCHAR" property="facEncrypt" />
+    <result column="fac_decode" jdbcType="VARCHAR" property="facDecode" />
+    <result column="fac_number" jdbcType="VARCHAR" property="facNumber" />
+    <result column="fac_state" jdbcType="VARCHAR" property="facState" />
+    <result column="fac_manage" jdbcType="VARCHAR" property="facManage" />
+    <result column="fac_clientId" jdbcType="VARCHAR" property="facClientid" />
+    <result column="ro_name" jdbcType="VARCHAR" property="facRoom" />
+    <result column="ro_floor" jdbcType="VARCHAR" property="facFloor" />
+    <result column="dep_name" jdbcType="VARCHAR" property="facDid" />
+    <result column="fac_register" jdbcType="VARCHAR" property="facRegister" />
+    <result column="fac_ip" jdbcType="VARCHAR" property="facIp" />
+    <result column="fac_type" jdbcType="VARCHAR" property="facType" />
+    <result column="sys_type" jdbcType="VARCHAR" property="sysType" />
+    <result column="shot_link" jdbcType="VARCHAR" property="shotLink" />
+    <result column="ro_num" jdbcType="VARCHAR" property="facAddres" />
+    <result column="vo_format" jdbcType="VARCHAR" property="vId" />
+    <result column="is_voice" jdbcType="VARCHAR" property="isVoice" />
+    <result column="voice_size" jdbcType="VARCHAR" property="voiceSize" />
+    <result column="fac_addres" jdbcType="VARCHAR" property="facAddres" />
+    <result column="co_switch" jdbcType="VARCHAR" property="coSwitch" />
+    <result column="uptime" jdbcType="VARCHAR" property="uptime" />
+    <result column="offtime" jdbcType="VARCHAR" property="offtime" />
+    <result column="fac_version" jdbcType="LONGVARCHAR" property="facVersion" />
+    <result column="temp" jdbcType="VARCHAR" property="temp" />
+  </resultMap>
+
+
+  <select id="selectFacnum" resultType="java.lang.String">
+    select
+    count(*) from
+    (
+    select id, fac_macid, fac_encrypt, fac_decode, fac_number, fac_state, fac_manage, fac_clientId,
+    fac_room, fac_floor, fac_did, fac_register, fac_ip, fac_type, sys_type, shot_link,
+    fac_addres, v_id, is_voice, voice_size, co_switch, fac_version, fac_area,uptime,offtime,org_code from
+    facility f
+
+    )a left
+    join
+    department b
+    on
+    a.fac_did=b.id
+    left join
+    voice c
+    on
+    a.v_id=c.id
+    <where>
+      <if test="facDid !=null and facDid != ''">
+        a.fac_macid like CONCAT('%',#{facDid},'%')
+      </if>
+      <if test="register !=null and register != ''">
+        and
+        a.fac_register=#{register}
+      </if>
+      <if test="state !=null and state != ''">
+        and
+        a.fac_state=#{state}
+      </if>
+      <if test="type !=null and type != ''">
+        and
+        a.fac_type=#{type}
+      </if>
+      <if test="ids !=null and ids.size >0 ">
+        and a.org_code in
+        <foreach collection="ids" item="item" index="index"
+                 open="(" separator="," close=")">#{item}</foreach>
+      </if>
+    </where>
+
+
+  </select>
+
+  <select id="selectFacpage" resultMap="facResultMap">
+    select
+    a.id aid, a.fac_macid, a.fac_encrypt, a.fac_decode, a.fac_number, a.fac_state, a.fac_manage, a.fac_clientId,
+    c.ro_name, a.fac_floor, b.dep_name, a.fac_register, a.fac_ip, a.fac_type, a.sys_type, a.shot_link,
+    a.fac_addres,  a.is_voice, a.voice_size, a.co_switch, a.fac_version, a.fac_area,a.uptime,a.offtime,c.ro_floor,c.ro_num from facility a
+    left join
+    department b
+    on
+    a.fac_did=b.id
+    left join
+    room c
+    on
+    a.fac_room=c.id
+    <where>
+      <if test="mac !=null and mac !=''">
+        a.fac_macid=#{mac}
+      </if>
+      <if test="ids !=null and ids.size >0 ">
+        and a.org_code in
+        <foreach collection="ids" item="item" index="index"
+                 open="(" separator="," close=")">#{item}</foreach>
+      </if>
+        and
+        fac_type=4
+    </where>
+    limit #{currentpage},#{perpage}
+  </select>
+
+  <select id="selectsignpage" resultMap="facResultMap">
+    select
+    a.id aid, a.fac_macid, a.fac_encrypt, a.fac_decode, a.fac_number, a.fac_state, a.fac_manage, a.fac_clientId,
+    c.ro_name, a.fac_floor, b.dep_name, a.fac_register, a.fac_ip, a.fac_type, a.sys_type, a.shot_link,
+    a.fac_addres,  a.is_voice, a.voice_size, a.co_switch, a.fac_version, a.fac_area,a.uptime,a.offtime,c.ro_floor,c.ro_num from facility a
+    left join
+    department b
+    on
+    a.fac_did=b.id
+    left join
+    room c
+    on
+    a.fac_room=c.id
+    <where>
+      <if test="mac !=null and mac !=''">
+        a.fac_macid=#{mac}
+      </if>
+      and
+      fac_type=5
+    </where>
+    limit #{currentpage},#{perpage}
+  </select>
+
+
+
+
+</mapper>

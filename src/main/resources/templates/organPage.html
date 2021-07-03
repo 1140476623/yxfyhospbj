@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>后台管理系统</title>
+<link th:href="@{/layui/css/layui.css}" rel="stylesheet" type="text/css">
+<script th:src="@{/js/jquery-1.8.2.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/common.js}" type="text/javascript"></script>
+<script th:src="@{/layui/layui.js}" type="text/javascript"></script>
+<link rel="stylesheet" th:href="@{/font-awesome/css/font-awesome.min.css}">
+<style>
+        .auth {
+            border: 1px solid rgb(200, 200, 200);
+            position: absolute;
+            top: 32%;
+            left: 32%;
+           width: 400px;
+            display: none;
+            background: white;
+           /* z-index: 50;*/
+        }
+       .layui-form-select{width:182px;}
+       
+       .layui-table-cell{
+		height:30px !important;
+       }
+
+        .layui-tab-content,.layui-table-view {
+           padding: 0px;
+           margin: 0px;
+        }
+	 .laytable-cell-1-0-3 {
+        width: 240px;
+        height:auto;
+        }
+	 .layui-table-col-special {
+    height:50px;
+	}
+         .layui-table thead tr,.layui-table-header
+       {
+             color: #fff;
+            background-color: #5EA3E6;
+
+
+        }
+
+	.laytable-cell-1-goPhoto{  /*最后的pic为字段的field*/
+       height: 100%;
+       width: 100%;
+   }
+
+        .layui-table tbody{
+            height: 50px;
+        }
+ .layui-table-cell{
+		text-align:center;
+		height: 50px ;
+ }
+    /*    #demoReload3 .layui-unselect {width:180px; }*/
+
+        #autn .layui-unselect {width:290px; }
+        #doctorMsg .layui-unselect {width:390px; }
+
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+	<div th:replace="~{header :: copy}"></div>
+	<div th:replace="~{left :: leftpage}"></div>
+
+<div class="layui-body">
+    <!-- 内容主体区域 -->
+    <div style="padding: 15px;">
+        <div id="doctorList" >
+            <fieldset class="layui-elem-field site-demo-button" style="margin-top: 5px;height: 70px;">
+                <div id="demoTable" class="layui-field-box" style="padding-top: 17px">
+                    机构名称：
+                    <div class="layui-inline">
+                        <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+                    </div>
+
+                    <button class="layui-btn" data-type="reload"><i class="layui-icon layui-icon-search" style="font-size: 15px; "></i>搜索</button>
+
+
+                    <button class="layui-btn " id="layerRole" style=" float:right;"><i class="layui-icon layui-icon-refresh" style="font-size: 15px; "></i>同步</button>
+                    <button class="layui-btn" id="addroom" style=" float:right;" ><i class="layui-icon layui-icon-add-circle" style="font-size: 15px; "></i>机构添加</button>
+                </div>
+            </fieldset>
+            <span style="position: absolute;right: 35px;margin-top: 10px;color: #808080">上次同步时间:2019-08-09 11:00</span>
+
+                    <div class="layui-tab-item layui-show"><table class="layui-hide" id="test" lay-filter="test"></table></div>
+
+
+
+
+        </div>
+
+        <div id="doctorMsg" class="layui-form" style="margin-top: 10px ;display: none">
+            <form action="" method="post" enctype="multipart/form-data" id="signupForm1">
+                <div style="height: 40px">
+                        <div style="float:left;width: 4px;height: 25px; background:  #5EA3E6;margin-right: 5px;margin-top: 10px"></div>  <h2 style="display: inline-block; font-weight: 600;margin-top: 10px">机构信息</h2><span style="margin-top: 10px;color: #EB5B5B;display: inline-block; margin-left: 10px;font-weight: 600;">(注:灰色区域为数据同步,不可编辑)</span>
+                    <button id="resetButton" class="layui-btn layui-btn-primary" style="float: right;margin-right: 30px"><i class="layui-icon layui-icon-fonts-clear" style="font-size: 15px; "></i>重置</button>
+                    <span style="float:right;margin-top: 10px;margin-right:10px;color: #808080">上次同步时间:2019-08-09 11:00</span>
+
+        </div>
+
+                <hr class="layui-bg-blue">
+
+<!--                        <div class="layui-upload" style="margin-top:10px;margin-left: 10%;float:left">-->
+
+<!--                            <div class="layui-upload-list" style="">-->
+<!--                                <img class="layui-upload-img" th:src="@{/image/moren.png}"  th:onerror="showDefaultImg(this)"  width=214px height=300px id="photo" style="width:214px;height:300px;background:rgba(159,159,159,1);">-->
+<!--                                <p id="demoText"></p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+                    <div id="inputLine" style="width: 1210px;  margin: 40px auto">
+                        <div class="layui-input-inline" style="width: 500px;margin-right: 200px">
+                            <label class="layui-form-label">机构编码:</label>
+                            <div class="layui-input-block" >
+                                <input name="orgCode" placeholder="请输入机构编码" class="layui-input" type="text" required readonly
+                                       id="aorgCode" style="margin-bottom : 10px ;background-color: #E6E6E6;border-color: #B3B3B3">
+                            </div>
+                        </div>
+
+                        <div class="layui-input-inline" style="width: 500px">
+                            <label class="layui-form-label">机构名称:</label>
+                            <div class="layui-input-block" >
+                                <input name="orgName" placeholder="请输入机构名称" maxlength="16" class="layui-input" type="text" required
+                                       id="aorgName" style="margin-bottom : 10px;">
+                            </div>
+                        </div>
+
+                        <div class="layui-input-inline" style="width: 500px;margin-right: 200px">
+                            <label class="layui-form-label">机构地址:</label>
+                            <div class="layui-input-block" >
+                                <input name="orgAddress" placeholder="请输入机构地址" class="layui-input" type="text"
+                                       id="aorgAddress" style="margin-bottom : 10px">
+                            </div>
+                        </div>
+
+                        <div class="layui-input-inline" style="width: 500px">
+                            <label class="layui-form-label">联系电话:</label>
+                            <div class="layui-input-block" >
+                                <input name="contactPhone" placeholder="请输入联系电话" class="layui-input" type="text"
+                                       id="acontactPhone" style="margin-bottom : 10px;">
+                            </div>
+                        </div>
+
+                        <div class="layui-input-inline" style="width: 500px;margin-right: 200px">
+                            <label class="layui-form-label">所属区域</label>
+                            <div class="layui-input-block" style="margin-bottom : 10px">
+                                <select name="rId" id="arId" lay-filter="role" class="layui-select"  style="width: 170px">
+                                    <option value="">--请选择--</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-input-inline" style="width: 500px">
+                            <label class="layui-form-label">联系人:</label>
+                            <div class="layui-input-block" >
+                                <input name="contactPerson" placeholder="请输入联系人" class="layui-input" type="text"
+                                       id="acontactPerson" style="margin-bottom : 10px;">
+                            </div>
+                        </div>
+
+                        <div class="layui-input-inline" style="width: 500px;margin-right: 200px">
+                            <label class="layui-form-label">邮政编码:</label>
+                            <div class="layui-input-block">
+                                <input name="postalCode" placeholder="请输入邮政编码" class="layui-input" type="text"
+                                       id="apostalCode" style="margin-bottom : 10px">
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="id" name="id">
+                        <div style="text-align: center">
+                            <input type="submit" class="layui-btn"  lay-submit="" lay-filter="modiAdmin" value="保存">
+                            <button class="layui-btn layui-btn-normal" id="rolback" style="background-color: #CCCCCC;color: #0D0D0D">返回</button>
+                        </div>
+
+                    </div>
+
+
+
+
+
+
+
+            </form>
+
+
+        </div>
+
+
+   		
+   	
+    
+
+
+    
+    
+    </div>
+  </div>
+  
+   
+ </div>
+<!-- 新增 -->
+<div style="width: 400px; position: relative; left: 20%; display: none;"  id="autn">
+
+    <form class="layui-form layui-form-pane" action="">
+
+            <div class="layui-inline" style="margin-top: 10px;">
+                <label class="layui-form-label">机构编码</label>
+                <div class="layui-input-inline" style="width: 290px">
+                    <input type="tel" id="orgCode" name="orgCode" lay-verify="timeName" maxlength="16" autocomplete="off" class="layui-input" >
+                </div>
+            </div>
+
+        <div class="layui-inline" style="margin-top: 10px;">
+            <label class="layui-form-label">机构名称</label>
+            <div class="layui-input-inline" style="width: 290px">
+                <input type="tel" id="orgName" name="orgName" lay-verify="timeName" maxlength="16" autocomplete="off" class="layui-input" >
+            </div>
+        </div>
+
+        <div class="layui-inline" style="margin-top: 10px;">
+            <label class="layui-form-label">机构地址</label>
+            <div class="layui-input-inline" style="width: 290px">
+                <input type="tel" id="orgAddress" name="orgAddress" lay-verify="timeName" autocomplete="off" class="layui-input" >
+            </div>
+        </div>
+
+        <div class="layui-inline" style="margin-top: 10px;">
+            <label class="layui-form-label">联系电话</label>
+            <div class="layui-input-inline" style="width: 290px">
+                <input type="tel" id="contactPhone" name="contactPhone" lay-verify="timeName" autocomplete="off" class="layui-input" >
+            </div>
+        </div>
+
+        <div class="layui-inline" style="margin-top: 10px">
+            <label class="layui-form-label">联系人</label>
+            <div class="layui-input-inline" style="width: 290px">
+                <input type="tel" id="contactPerson" name="contactPerson" lay-verify="timeName" autocomplete="off" class="layui-input" >
+            </div>
+        </div>
+
+        <div class="layui-inline" style="margin-top: 10px;margin-bottom: 10px">
+            <label class="layui-form-label">邮政编码</label>
+            <div class="layui-input-inline" style="width: 290px">
+                <input type="tel" id="postalCode" name="postalCode" lay-verify="timeName" autocomplete="off" class="layui-input" >
+            </div>
+        </div>
+        <br>
+        <div class="layui-input-inline">
+            <label class="layui-form-label">所属区域</label>
+            <div class="layui-input-block" style="margin-bottom : 10px">
+                <select name="rId" id="rId" lay-filter="role" class="layui-select"  style="width: 170px">
+                    <option value="">--请选择--</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item" style="float: bottom">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="addRole" >立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary" style="background-color: #CCCCCC;color: #0D0D0D !important;">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<input type="hidden" th:value="${pagelogo}" id="iden">
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="modifly">编辑</a>
+  
+</script>
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>
+
+<script type="text/html" id="caStickModel">
+	<div>
+		<input type="checkbox" value={{d.status}} lay-skin="switch" lay-filter="switchTest" lay-text="启用|禁用"  {{ d.status == '1' ? 'checked' : '' }} >
+	</div>
+</script>
+
+<script type="text/html" id="goimage">
+<div>
+	{{# if(d.docHead == null || d.docHead==""){ }}
+	<span>无</span>
+	 {{# }else { }}
+	<img src="{{d.docHead}}" style="height:50px; width:100%;">
+	{{# } }}
+</div>
+</script>
+
+<script>
+    document.getElementById("resetButton").onclick = function(){
+        var roId = document.getElementById("roId");
+        roId.defaultValue = roId.value;
+
+        var roDid= document.getElementById("roDid");
+        roDid.defaultValue = roDid.value;
+        var dataSource = document.getElementById("dataSource");
+        dataSource.defaultValue = dataSource.value;
+
+        document.forms[0].reset()
+    }
+
+    function showDefaultImg(img){
+        console.log("进入方法");
+        img.src = "[[@{/image/moren.png}]]";
+        //不循环执行
+        img.onerror = null;
+    }
+</script>
+
+<script>
+
+var iden=$("#iden").val();
+console.log(iden);
+showthis(iden);
+
+layui.use(['laytpl','laypage','table','element','layer','jquery','form','upload'], function(){
+	var table = layui.table,
+	  element = layui.element,
+	  $ = layui.jquery,
+	  form=layui.form,
+	  layer=layui.layer,
+	  upload=layui.upload,
+	laytpl = layui.laytpl;
+	var loadindex=null;
+
+
+    table.render({
+        id:'testReload'
+        ,elem: '#test'
+        ,url:'[[@{/sysOrganization/organList}]]'
+        ,title: '用户数据表'
+        ,skin:'nob'
+        ,cols: [
+            [
+                {field:'id', title:'id',hide:'true'}
+                ,{field:'orgCode', title:'机构编码'}
+                ,{field:'orgName', title:'机构名称'}
+                ,{field:'orgAddress', title:'机构地址'}
+                ,{field:'contactPhone', title:'联系电话'}
+                ,{field:'postalCode', title:'邮政编码'}
+                ,{field:'contactPerson', title:'联系人'}
+                ,{field:'rId', title:'关联区域id',hide:'true'}
+                ,{field:'temp', title:'所属区域'}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+            ]
+        ]
+        ,page: true
+    });
+
+
+
+    $.get('[[@{/sysRegion/getParentRegion}]]',{pid:'4'}, function (data) {
+        var $html = "";
+        if(data.data != null){
+            $.each(data.data, function (index, item) {
+
+                if (item.proType){
+                    $html += "<option class='generate' value='" + item.id + "'>" + item.regionName + "</option>";
+                }else{
+                    $html += "<option value='" + item.id + "'>" + item.regionName + "</option>";
+                }
+            });
+            $("select[name='rId']").append($html);
+            //反选
+            //$("select[name='interest']").val($("#???").val());
+            //append后必须从新渲染
+            form.render('select');
+        }
+    });
+
+    //监听提交
+    form.on('submit(addRole)', function(data){
+
+        $.ajax({
+            type: 'post',
+            url: '[[@{/sysOrganization/addOrgan}]]', // ajax请求路径
+            data:{
+                orgCode:data.field.orgCode,
+                orgName:data.field.orgName,
+                orgAddress:data.field.orgAddress,
+                contactPhone:data.field.contactPhone,
+                contactPerson:data.field.contactPerson,
+                postalCode:data.field.postalCode,
+                rId:data.field.rId,
+                isHis:"0"
+            },
+            dataType:'json',
+            async:false,
+            success: function(data){
+                if(data.state==1){
+                    layer.msg(data.message,{
+                        time:2000,
+                        end:function () {
+                            location.reload();
+                        }
+                    })
+                    return false;
+                }else {
+                    layer.msg(data.message);
+                    return false;
+                }
+            }
+        });
+
+        return false;
+    });
+
+    $(document).on('click','#addroom',function(){
+        index =layer.open({
+            type: 1,
+            area: ['600px', '500px'],
+            title: '机构添加',
+            skin: 'layui-layer-demo', //加上边框
+            content: $('#autn')
+        });
+        //设置位置
+        layer.style(index, {
+            top: '150px'
+        });
+    });
+
+
+
+    $.get('[[@{/depart/departAll}]]',{}, function (data) {
+        var $html = "";
+        if(data.data != null){
+            $.each(data.data, function (index, item) {
+
+                if (item.proType){
+                    $html += "<option class='generate' value='" + item.depId + "'>" + item.depName + "</option>";
+                }else{
+                    $html += "<option value='" + item.depId + "'>" + item.depName + "</option>";
+                }
+            });
+
+            $("select[name='aroDid']").append($html);
+
+            //反选
+            //$("select[name='interest']").val($("#???").val());
+            //append后必须从新渲染
+            form.render('select');
+        }
+    });
+
+//多图片上传
+  var uploadInst = upload.render({
+     elem: '#test2'     /*根据绑定id，打开本地图片*/
+    ,url: '${ctx}/origin/user/saveOrUpdate'  /*上传后台接受接口*/
+    ,auto: false        /*true为选中图片直接提交，false为不提交根据bindAction属性上的id提交*/
+      ,multiple: true
+    ,bindAction: '#formSubmit'   /*提交图片*/
+    ,choose:function(obj){
+        //预读本地文件示例，不支持ie8
+        obj.preview(function(index, file, result){
+            $('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img" style="width: 98px;height: 98px;margin: 5px">')
+        });
+      }
+    ,done: function(res){
+      //如果上传失败
+      if(res.code > 0){
+        return layer.msg('上传失败');
+      }
+      //上传成功
+    }
+    ,error: function(){
+      //演示失败状态，并实现重传
+      var demoText = $('#demoText');
+      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+      demoText.find('.demo-reload').on('click', function(){
+        uploadInst.upload();
+      });
+    }
+  });
+
+    $(document).on('click','#rolback',function(){
+        location.replace('[[@{/room/showroom}]]');
+    });
+
+  
+  
+  var active = {
+		    reload: function(){
+
+		      
+		      //执行重载
+		      table.reload('testReload', {
+		        page: {
+		          curr: 1 //重新从第 1 页开始
+		        }
+		        ,where: {
+                      orgName: $("#demoReload").val()
+		        }
+            });
+		    }
+		  };
+
+		  
+		  $('#demoTable .layui-btn').on('click', function(){
+		    var type = $(this).data('type');
+		    active[type] ? active[type].call(this) : '';
+
+		  });
+
+
+  
+ 
+  
+  
+  //监听行工具事件
+  table.on('tool(test)', function(obj){
+    var data = obj.data;
+   	var aid=data['id'];
+  
+    if(obj.event == 'delete'){
+      layer.confirm('真的删除行么',{btn: ['确定', '取消'],title:"提示"},function(index){
+    
+        $.ajax({  
+            type: 'post',  
+            url: '[[@{/admin/delAdmin}]]', // ajax请求路径  
+            data: {  
+            	id:aid
+            },  
+            dataType:'json',
+            async:false,
+            success: function(data){ 
+              if(data.state==1){
+            	  layer.msg('删除成功',{
+                      time:1000,
+                      end:function () {
+                      	location.reload();
+                      }
+                  })
+              }else {
+                return layer.msg(data.message);
+              }
+            }  
+        }); 
+        layer.close(index);
+      });
+    } 
+    if(obj.event == 'modifly'){
+        $("#doctorMsg").css("display","block");
+    	//$("#photo").removeAttr("src");
+    	  $('#doctorList').css('display', 'none');
+    	  $('#aorgCode').val(data['orgCode']);
+    	  $('#aorgName').val(data['orgName']);
+    	  $('#aorgAddress').val(data['orgAddress']);
+    	  $('#acontactPhone').val(data['contactPhone']);
+    	  $('#apostalCode').val(data['postalCode']);
+    	  $('#id').val(data['id']);
+        $("select[name='rId']").val(data['rid']);
+        $('#acontactPerson').val(data['contactPerson']);
+
+    	  form.render();
+    }
+   
+    
+  });
+  
+//监听提交
+form.on('submit(modiAdmin)', function(data){
+	var formData = new FormData($( "#signupForm1" )[0]);
+	 $.ajax({  
+		    type: 'post',  
+		    url: '[[@{/sysOrganization/modiOrgan}]]', // ajax请求路径
+		    data: formData,  
+		    cache : true,
+		    async:false,
+		    contentType: false,   //jax 中 contentType 设置为 false 是为了避免 JQuery 对其操作，从而失去分界符，而使服务器不能正常解析文件
+	        processData: false,
+		    success: function(data){ 
+		      if(data.state==1){
+		      	layer.msg(data.message,{
+		              time:2000,
+		              end:function () {
+		              	location.reload();
+		              }
+		          })
+		          return false;
+		      }else {
+		      	layer.msg(data.message);
+		          return false;
+		      }
+		    }  
+		});
+
+		return false;
+ });
+
+    $(document).on('click','#layerRole',function(){
+        loadindex = layer.load(1);
+        $.ajax({
+            type: 'post',
+            url: '[[@{/sysOrganization/OrganSyn}]]', // ajax请求路径
+            data:{},
+            dataType:'json',
+
+            success: function(data){
+                layer.close(loadindex);
+                if(data.state==1){
+                    layer.msg(data.message,{
+                        time:2000,
+                        end:function () {
+                            location.reload();
+                        }
+                    })
+                    return false;
+                }else {
+                    layer.close(loadindex);
+                    layer.msg(data.message);
+                    return false;
+                }
+            }
+        });
+    });
+
+  
+
+
+
+
+});
+//关闭提示
+function closea() {
+    $('#autn').css('display', 'none');
+    $('#device').css('display', 'none');
+    $('#edit').css('display', 'none');
+}
+</script>
+
+</body>
+
+</html>

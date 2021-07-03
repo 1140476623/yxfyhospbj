@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link th:href="@{/layui/css/layui.css}" rel="stylesheet" type="text/css">
+<script th:src="@{/js/jquery-1.8.2.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/common.js}" type="text/javascript"></script>
+<script th:src="@{/layui/layui.js}" type="text/javascript"></script>
+<link th:href="@{/admin/css/font-awesome.min.css?v=4.4.0}" rel="stylesheet" type="text/css">
+    <link th:href="@{/admin/css/animate.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/admin/css/style.min.css?v=4.1.0}" rel="stylesheet" type="text/css">
+    <link th:href="@{/admin/css/plugins/sweetalert/sweetalert.css}" rel="stylesheet" type="text/css">
+  	<link rel="stylesheet" th:href="@{/admin/js/plugins/zTree/zTreeStyle.css}" type="text/css" >
+<style>
+
+		.auth, #addRole {
+            border: 1px solid rgb(200, 200, 200);
+            position: absolute;
+            top: 32%;
+            left: 32%;
+            display: none;
+            background: white;
+            /*z-index: 10;*/
+        }
+        
+
+        /*修复权限问题层级*/
+        .layui-side{
+            z-index: auto !important;
+        }
+
+        .layui-body{
+            z-index: auto !important;
+        }
+       
+       .layui-form-select{width:182px;}
+       
+       .layui-table-cell{
+		height:30 !important;
+		
+	}
+	
+	body .layer-test{background: none; box-shadow: none;}
+	 .laytable-cell-1-0-3 {
+    width: 240px;
+    height:auto;
+	} 
+	.laytable-cell-1-goPhoto{  /*最后的pic为字段的field*/
+       height: 100%;
+       width: 100%;
+       
+   } 
+	.layui-table-cell{
+		text-align:center;
+ 	}
+    </style>
+    
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+	<div th:replace="~{header :: copy}"></div>
+	<div th:replace="~{left :: leftpage}"></div>
+	<div class="layui-body">
+    <!-- 内容主体区域 -->
+    <div style="padding: 15px;">
+    	<!-- 内容主体区域 -->
+			<div style="padding: 15px;">
+			
+				<div style="width: 1000px; position: relative; left: 20%;">
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+  					<legend>节目添加</legend>
+				</fieldset>
+					<div class="layui-form-item" >
+							<div class="layui-carousel" id="test1">
+  							<div carousel-item id="Carousel">
+    							
+  							</div>
+						</div>
+					</div>
+					<form class="layui-form layui-form-pane"  id="signupForm" enctype="multipart/form-data" method="post">
+						<div class="layui-upload">
+  							<button type="button" class="layui-btn" id="test2">多图片上传</button> 
+  								<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+    								预览图：
+    								<div class="layui-upload-list" id="photo"></div>
+ 								</blockquote>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">输入节目名</label>
+							<div class="layui-input-block">
+								<input type="text" name="temName" lay-verify="title"
+									autocomplete="off" placeholder="请输入节目名" class="layui-input" >
+							</div>
+						</div>
+						
+						
+						
+						<div class="layui-form-item">
+							<div class="layui-inline">
+								<label class="layui-form-label">轮播时间</label>
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input" id="temBytime" name="temBytime"
+										placeholder="推荐3~5秒" required>
+								</div>
+							</div>
+							
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width:120px">轮播间隔时间</label>
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input" id="temIntime" name="temIntime"
+										placeholder="推荐5~7秒" required>
+								</div>
+							</div>
+							
+
+						</div>
+
+							<div class="layui-form-item">
+							
+
+							
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width:120px">推送超时时间</label>
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input" id="temTrytime" name="temTrytime"
+										placeholder="推荐5~10分钟">
+								</div>
+							</div>
+
+							<div class="layui-inline" style="display:none">
+								<label class="layui-form-label">屏幕类型</label>
+								<div class="layui-input-inline">
+									<select name="temScreen" lay-verify="" required style="width:120px"> 
+										<option value="">请选择</option>
+										<option value="0">横屏</option>
+										<option value="1">竖屏</option>
+									</select>
+								</div>
+							</div>
+
+
+								<div class="layui-inline">
+									<label class="layui-form-label" style="width:120px">开始时间</label>
+									<div class="layui-input-inline">
+										<input type="text" class="layui-input" id="startTime" name="startTime" placeholder=" - ">
+									</div>
+								</div>
+
+
+							
+							</div>
+
+						<div class="layui-form-item">
+
+
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width:110px">结束时间</label>
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input" id="endTime" name="endTime" placeholder=" - ">
+								</div>
+							</div>
+
+						</div>
+
+							<div class="layui-upload">
+								<button type="button" class="layui-btn" id="testAction">选择视频</button>
+								
+								<div class="layui-upload-list">
+								<table class="layui-table">
+								<thead class="FileArea">
+									<tr>
+										<th>文件名</th>
+										<th>大小</th>
+										<th>状态</th>
+									</tr>
+									
+								</thead>
+								</table>
+								</div>
+								<input type="file" multiple="multiple" id="video" name="video"
+									style="display: none" accept=".AVI,.mov,.rmvb,.rm,.FLV,.mp4,.3GP">
+							</div>
+
+							
+
+							<div class="layui-form-item" align="center">
+							<div class="layui-input-block">
+								<button  class="layui-btn" lay-submit="" lay-filter="FilePush" type="button" id="FilePush" >立即推送</button>
+								<button  class="layui-btn layui-btn-normal" lay-submit="" lay-filter="noPush" type="button" id="noPush" >暂不推送</button>
+								
+								
+							</div>
+
+								
+							</div>
+					</form>
+				
+				
+				
+				</div>
+			</div>
+  
+  	
+   		   <!--分配权限加载的tree结构-->
+    <div class="zTreeDemoBackground left" style="display: none" id="role">
+        <input type="hidden" id="nodeid">
+        <div class="form-group">
+            <div class="col-sm-5 col-sm-offset-2">
+                <ul id="treeType" class="ztree"></ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4 col-sm-offset-4" style="margin-bottom: 15px">
+                <input type="button" value="确认分配" class="btn btn-primary" id="postform" style="width: 233px;height: 61px;border-left-width: 0px;margin-left: 179px;"/>
+            </div>
+        </div>
+    </div>
+  
+  </div>
+ 
+  
+</div>
+<input type="hidden" th:value="${pagelogo }" id="iden">
+
+ <div style="display:none; width: 300px" id="jindu" >
+								
+									<div class="layui-progress" lay-filter="plan">
+										<div class="layui-progress-bar" lay-percent="0%"></div>
+									</div>
+</div>
+<script th:src="@{/admin/js/jquery.min.js?v=2.1.4}" type="text/javascript"></script>
+<script th:src="@{/admin/js/content.min.js?v=1.0.0}" type="text/javascript"></script>
+<script th:src="@{/admin/js/plugins/layer/layer.min.js}" type="text/javascript"></script>
+<script type="text/javascript" th:src="@{/admin/js/plugins/zTree/jquery.ztree.core-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/admin/js/plugins/zTree/jquery.ztree.excheck-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/admin/js/plugins/zTree/jquery.ztree.exedit-3.5.js}"></script>
+<script>
+
+var iden=$("#iden").val();
+console.log(iden);
+showthis(iden);
+var ins=null;
+layui.use(['laytpl','laypage','table','element','layer','jquery','form','upload','carousel','laydate'], function(){
+	var table = layui.table,
+	  element = layui.element,
+	  $ = layui.jquery,
+	  form=layui.form,
+	  layer=layui.layer,
+	  laytpl = layui.laytpl,
+	  upload = layui.upload,
+	  carousel = layui.carousel,
+	  laydate =layui.laydate;
+	var loadindex=null;
+	
+ins =carousel.render({
+	    elem: '#test1'
+	    ,width: '100%' //设置容器宽度
+	    ,height:'400px'
+	    ,arrow: 'always'
+	    //,anim: 'updown'//始终显示箭头
+	    //,anim: 'updown' //切换动画方式
+	});
+
+
+	//时间选择器
+	laydate.render({
+		elem: '#startTime'
+		,type: 'time'
+		,format: 'HH:mm'
+	});
+
+	//时间选择器
+	laydate.render({
+		elem: '#endTime'
+		,type: 'time'
+		,format: 'HH:mm'
+	});
+	
+
+	
+	//多图片上传
+	  upload.render({
+	    elem: '#test2'
+	    ,url: '/upload/'
+	    ,accept:'images'
+	    ,auto: false
+	    ,multiple: true
+	    ,bindAction: '#lalal'
+	    ,choose: function(obj){
+	     //预读本地文件示例，不支持ie8
+	     obj.preview(function(index, file, result){
+	    	
+	    	  
+	        $('#photo').append('<img name="'+file.name+'" src="'+ result +'" alt="'+ file.name +'"  height="100" width="100" onclick="deletes(this)">');
+	        $('#Carousel').append('<div name="'+file.name+'"><img src="'+ result +'" alt="'+ file.name +'"  height="400" width="1000""></div>')
+	         
+	        ins.reload({
+                elem: '#test1',
+                width: '100%',//设置容器宽度
+                height:'400px',
+                //anim: 'updown', //始终显示箭头
+                //,anim: 'updown' //切换动画方式
+                
+            });
+	        
+	      });
+	    }
+	    ,done: function(res){
+	      //上传完毕
+	    }
+	  });
+	
+	
+	  var xhrOnProgress=function(fun) {
+	      xhrOnProgress.onprogress = fun; //绑定监听
+	      //使用闭包实现监听绑
+	      return function() {
+	        //通过$.ajaxSettings.xhr();获得XMLHttpRequest对象
+	        var xhr = $.ajaxSettings.xhr();
+	        //判断监听函数是否为函数
+	        if (typeof xhrOnProgress.onprogress !== 'function')
+	          return xhr;
+	        //如果有监听函数并且xhr对象支持绑定时就把监听函数绑定上去
+	        if (xhrOnProgress.onprogress && xhr.upload) {
+	          xhr.upload.onprogress = xhrOnProgress.onprogress;
+	        }
+	        return xhr;
+	      }
+	    }
+
+	  $("#video").on("change", function () {
+			$('.FoleArea').empty();
+		    var obj = document.getElementById("video");
+		    var length = obj.files.length;
+		    $(".FileArea").html("<tr><th>文件名</th><th>大小</th><th>状态</th></tr>");    
+		    for (var i = 0; i < length; i++) {
+		    	 var tr = '<tr>'
+			          +'<td>'+ obj.files[i].name +'</td>'
+			          +'<td>'+ (obj.files[i].size/1014).toFixed(1) +'kb</td>'
+			          +'<td>等待上传</td>'
+			        +'</tr>';
+		    	 $(".FileArea").append(tr);
+		    }
+		    
+		   
+		   
+		});
+	  
+	  $("#FilePush").on("click", function () {
+		 	
+		  
+		
+		    var index = '';
+		    var index2 = '';
+		    index2 = layer.load(0, {shade: false}); //0代表加载的风格，支持0-2
+	        //获取权限信息
+	        $.getJSON('[[@{/template/PushList}]]', function (res) {
+	            layer.close(index2);
+	            if (res.state == 1) {
+	                // zNodes = JSON.parse(res.data);  //将字符串转换成obj
+	                console.log(res);
+	                zNodes = (res.data);  //将字符串转换成obj
+	                //页面层
+	                index = layer.open({
+	                    type: 1,
+	                    area: ['600px', '600px'],
+	                    title: '推送分配',
+	                    skin: 'layui-layer-demo', //加上边框
+	                    content: $('#role')
+	                });
+	                //设置位置
+	                layer.style(index, {
+	                    top: '150px'
+	                });
+
+	                //设置zetree
+	                var setting = {
+	                    check: {
+	                        enable: true
+	                    },
+	                    data: {
+	                        simpleData: {
+	                            enable: true
+	                        }
+	                    }
+	                };
+
+	                $.fn.zTree.init($("#treeType"), setting, zNodes);
+	                var zTree = $.fn.zTree.getZTreeObj("treeType");
+	                zTree.expandAll(true);
+	                
+	                var zTree = $.fn.zTree.getZTreeObj("treeType");
+	                var nodes = zTree.getNodes();
+	                var nodesSysAll = zTree.transformToArray(nodes); 
+	                console.log(nodesSysAll);
+	           	for(var i = 0;i<nodesSysAll.length;i++){
+	           		
+	               	
+	                   if (nodesSysAll[i].state == 0) {
+	                   	zTree.setting.view.fontCss["color"] ="red";
+	                    zTree.updateNode(nodesSysAll[i]);
+	                   }
+	                  
+	               };
+
+	            } else {
+	                layer.alert(res.msg);
+	            }
+
+	        });
+		   	
+	        $("#postform").click(function () {
+	        	if($('#temIntime').val()==''){
+		  			return layer.msg("轮播间隔时间不能为空");
+		  		}
+		  		if($('#temBytime').val()==''){
+		  			return layer.msg("轮播时间不能为空");
+		  		}
+		  		if($('#temNoops').val()==''){
+		  			return layer.msg("跳转app时间不能为空");
+		  		}
+		  		/* var layerload= layer.open({
+				  	 title: false,
+					 skin: 'layer-test',
+					 btn:false,
+					 closeBtn: 0,
+					 content: $("#jindu").html() //这里content是一个普通的String
+			  }); */
+	        	 loadindex = layer.load(1);
+	            var zTree = $.fn.zTree.getZTreeObj("treeType");
+	            var nodes = zTree.getCheckedNodes(true);
+	            var NodeString = '';
+	            $.each(nodes, function (n, value) {
+	                if (n > 0) {
+	                    NodeString += ',';
+	                }
+	                NodeString += value.id;
+	            });
+				
+	            
+	            var fd = new FormData();
+		        var formData = new FormData($( "#signupForm" )[0]);
+		        var suzu=[];
+				$("#photo img").each(function(i){
+					var name=$(this).attr("name");
+					var src= $(this).attr("src");
+					var obj={
+						name : name,
+						src  : src
+					};
+					suzu.push(obj);
+
+				});
+				formData.append('baseStr',JSON.stringify(suzu));
+				
+		        formData.append('nodeId',NodeString);
+		         
+		         $.ajax({
+		            
+		            type : "post",
+		            url : "[[@{/template/addTemplate}]]" ,
+		            data : 
+		            	formData,  // 你的formid
+		           
+		            contentType: false,   //jax 中 contentType 设置为 false 是为了避免 JQuery 对其操作，从而失去分界符，而使服务器不能正常解析文件
+		            processData: false,   //当设置为true的时候,jquery ajax 提交的时候不会序列化 data，而是直接使用data
+		            cache: false,
+		            xhr:xhrOnProgress(function(e){
+	                    var percent=e.loaded/e.total;
+	                    var num=Number(percent*100).toFixed(0)+"%";
+	                    element.progress('plan',num);
+	                }),
+		            success : function(data) {
+		                if (data.state==1) {
+		                	layer.close(loadindex);
+		                	layer.msg(data.message,{
+		                        time:1000,
+		                        end:function () {
+		                        	 window.location.replace("[[@{/template/showTem}]]");
+		                        }
+		                    })
+		                  
+		                } else {
+		                	layer.close(loadindex);
+		                   return layer.msg(data.message);
+		                }
+		            }
+		        }); 
+	            
+	           
+	        });
+		    
+		   
+		   
+		});
+
+
+	  
+	 
+
+	  form.on('submit(noPush)', function(data){
+		  
+		  var layerload= layer.open({
+			  	 title: false,
+				 skin: 'layer-test',
+				 btn:false,
+				 closeBtn: 0,
+				 content: $("#jindu").html() //这里content是一个普通的String
+		  });
+		  
+		  
+		  if($('#temIntime').val()==''){
+	  			return layer.msg("轮播间隔时间不能为空");
+	  		}
+	  		if($('#temBytime').val()==''){
+	  			return layer.msg("轮播时间不能为空");
+	  		}
+	  		if($('#temNoops').val()==''){
+	  			return layer.msg("跳转app时间不能为空");
+	  		}
+		  loadindex = layer.load(1);
+		  var fd = new FormData();
+	        var formData = new FormData($( "#signupForm" )[0]);
+	        var suzu=[];
+	        $("#photo img").each(function(i){
+	        	var name=$(this).attr("name");
+	        	var src= $(this).attr("src");
+	        	var obj={
+	        		name : name,
+	        		src  : src
+	        	};
+	        	suzu.push(obj);
+	        	
+		  	});
+	       	
+	        console.log(suzu);
+	        
+	        formData.append('baseStr',JSON.stringify(suzu));
+	        
+			
+	        formData.append('nodeId',"");
+	         
+	         $.ajax({
+	           
+	            type : "post",
+	            url : "[[@{/template/addTemplate}]]" ,
+	            data : 
+	            	formData,  // 你的formid
+	          
+	            contentType: false,   //jax 中 contentType 设置为 false 是为了避免 JQuery 对其操作，从而失去分界符，而使服务器不能正常解析文件
+	            processData: false,   //当设置为true的时候,jquery ajax 提交的时候不会序列化 data，而是直接使用data
+	            cache: false,
+	            xhr:xhrOnProgress(function(e){
+                    var percent=e.loaded/e.total;
+                    var num=Number(percent*100).toFixed(0)+"%";
+                    element.progress('plan',num);
+                 }),
+	            success : function(data) {
+	                if (data.state==1) {
+	                	 layer.close(loadindex);
+	                	layer.close(layerload);
+	                	 layer.msg(data.message,{
+	                        time:1000,
+	                        end:function () {
+	                        	location.reload();
+	                        }
+	                    })  
+	                  
+	                } else {
+	                	layer.close(loadindex);
+	                	layer.close(layerload);
+	                   return layer.msg(data.message);
+	                }
+	            }
+	        });
+		    return false;
+	  });
+	  
+	  
+  
+});
+function deletes(obj){
+    //  点击后直接获取本点击对象
+    
+var name=obj.getAttribute("name");
+    console.log(name);
+    $("*[name='"+name+"']").remove();
+    layui.use(['carousel'],function(){
+    	var	carousel = layui.carousel;
+    	ins.reload({
+            elem: '#test1',
+            width: '100%', //设置容器宽度
+            height:'400px',
+            arrow: 'always', //始终显示箭头
+            //anim: 'updown' //切换动画方式
+            
+        });
+    });	
+}
+var str = "";
+$("#testAction").on("click", function () {
+	$("#video").click();
+});
+
+
+</script>
+
+  
+
+</body>
+</html>

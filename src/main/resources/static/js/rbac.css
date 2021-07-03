@@ -1,0 +1,13 @@
+a{
+	text-decoration: none;
+	font-size: 16px;
+	font-family: 黑体;
+}
+.role_name{
+	margin: 10px auto;
+	font-family: 黑体;
+	font-size: 16px;
+}
+.role_name span{
+	color: red;
+}

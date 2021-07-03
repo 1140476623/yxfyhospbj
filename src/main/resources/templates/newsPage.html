@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理系统</title>
+    <link th:href="@{/favicon.ico}" rel="shortcut icon">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" type="text/css">
+    <script th:src="@{/js/jquery-1.8.2.min.js}" type="text/javascript"></script>
+    <script th:src="@{/js/common.js}" type="text/javascript"></script>
+    <script th:src="@{/layui/layui.js}" type="text/javascript"></script>
+    <script type="text/javascript" th:src="@{/js/wangEditor.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/font-awesome/css/font-awesome.min.css}">
+    <style>
+
+        .layui-table thead tr, .layui-table-header {
+            color: #fff;
+            background-color: #5EA3E6;
+        }
+
+        .mydiv {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /*富文本框高度*/
+        .w-e-text-container {
+            height: 500px !important;
+        }
+
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div th:replace="~{header :: copy}"></div>
+    <div th:replace="~{left :: leftpage}"></div>
+
+    <div class="layui-body">
+
+        <!--增加-->
+        <div id="newsInfo" class="layui-form" style="margin-top: 50px ;display: none;padding-left: 200px">
+            <form action="" method="post" enctype="multipart/form-data" id="signupForm1">
+
+                <div class="layui-input-inline" style="width: 500px;margin-right: 200px">
+                    <label class="layui-form-label ">通知标题:</label>
+                    <div class="layui-input-block">
+                        <input name="title" placeholder="请输入通知标题" class="layui-input" type="text"
+                               lay-verify="required" id="title">
+                    </div>
+                </div>
+                <!--<div class="layui-input-inline" style="width: 500px;">-->
+                    <!--<label class="layui-form-label ">类型:</label>-->
+                    <!--<div class="layui-input-block" style="margin-bottom : 10px">-->
+                        <!--<select name="type" id="type" class="layui-select" lay-verify="required">-->
+                            <!--<option value="">&#45;&#45;请选择&#45;&#45;</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="layui-upload " style="width: 500px;">-->
+                    <!--<label class="layui-form-label ">通知公告缩略图:</label>-->
+                    <!--<div class="layui-upload-list" style="">-->
+                        <!--<img class="layui-upload-img" th:src="@{/image/moren.png}" th:onerror="showDefaultImg(this)"-->
+                             <!--id="photo" style="width:100px;height:120px;background:rgba(159,159,159,1);">-->
+                        <!--<p id="demoText"></p>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <div class="layui-form-item layui-form-text" style="padding-top:20px;width: 1220px;">
+                    <label class="layui-form-label layui-required">通知内容:</label>
+                    <div class="layui-input-block" id="mytextarea"></div>
+                </div>
+                <div style="padding-left: 550px">
+                    <input type="submit" class="layui-btn" lay-submit="" lay-filter="modiAdmin" value="保存">
+                    <button class="layui-btn layui-btn-normal" id="rolback"
+                            style="background-color: #CCCCCC;color: #0D0D0D">返回
+                    </button>
+                </div>
+                <input type="hidden" id="newsId" name="newsId">
+            </form>
+        </div>
+
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;" id="newsList">
+            <fieldset class="layui-elem-field site-demo-button" style="margin-top: 5px;height: 70px;">
+                <div id="demoTable" class="layui-field-box" style="padding-top: 17px">
+                    标题：
+                    <div class="layui-inline">
+                        <input class="layui-input" name="id" id="demoReload" autocomplete="off" style="width: 300px;">
+                    </div>
+                    <button class="layui-btn" data-type="reload">
+                        <i class="layui-icon layui-icon-search" style="font-size: 15px; "></i>搜索
+                    </button>
+                    <button class="layui-btn" id="reset">
+                        <i class="layui-icon layui-icon-refresh" style="font-size: 15px; "></i>重置刷新
+                    </button>
+                    <span>
+                        <button class="layui-btn" id="addNews" style="float: right">
+                        <i class="layui-icon layui-icon-refresh" style="font-size: 15px; "></i>添加通知
+                    </button>
+                    </span>
+                </div>
+            </fieldset>
+            <table class="layui-hide" id="test" lay-filter="test"></table>
+            <div id="test1"></div>
+
+        </div>
+    </div>
+</div>
+<input type="hidden" th:value="${pagelogo}" id="iden">
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="del">删除</a>
+</script>
+<script type="text/html" id="goimage">
+    <div>
+        {{# if(d.image == null || d.image==""){ }}
+        <span>无</span>
+        {{# }else { }}
+        <img src="{{d.image}}" style="height:50px;" onclick="check(this)">
+        {{# } }}
+    </div>
+</script>
+<script type="text/html" id="caStickModel">
+    <div>
+        <input type="checkbox" value={{d.state}} lay-skin="switch" lay-filter="switchTest" lay-text="启用|禁用"  {{ d.state == '1' ? 'checked' : '' }} >
+    </div>
+</script>
+
+<script type="text/html" id="caStickModel1">
+    <div>
+        <input type="checkbox" value={{d.top}} lay-skin="switch" lay-filter="switchTest1" lay-text="启用|禁用"  {{ d.top == '1' ? 'checked' : '' }} >
+    </div>
+</script>
+
+<script>
+
+  var iden = $("#iden").val();
+  console.log(iden);
+  showthis(iden);
+
+  layui.use(['upload', 'laypage', 'table', 'element', 'layer', 'jquery', 'form'], function () {
+    var table = layui.table,
+      element = layui.element,
+      $ = layui.jquery,
+      form = layui.form,
+      layer = layui.layer,
+      upload = layui.upload;
+    var ins1 = table.render({
+      id: 'testReload'
+      , elem: '#test'
+      , url: '[[@{/news/getNewsList}]]'
+      , title: '患者缴费记录表'
+      , skin: 'nob'
+      , cols: [
+        [
+          {field: 'zizeng', type: 'numbers', title: '序号',style:'height:50px;'},
+          {field: 'id', title: 'newsId', hide: 'true'},
+          {field: 'title', title: '标题', align: 'center'},
+          // {field: 'typeName', title: '通知公告类型', align: 'center'},
+          {field: 'top', title: '是否置顶', templet:'#caStickModel1',align: 'center'},
+          {field: 'state', title: '是否启用',templet:'#caStickModel', align: 'center'},
+          //{field: 'image', title: '缩略图', templet: '#goimage', align: 'center', style: 'height:60px;'},
+          {field: 'operTime', title: '发布时间', align: 'center'},
+          {field: 'operUser', title: '发布人', align: 'center'},
+          {title: '操作', toolbar: '#barDemo', align: 'center'}
+        ]
+      ]
+      , page: true
+    });
+
+    var active = {
+      reload: function () {
+        var demoReload = $('#demoReload');
+        //执行重载
+        table.reload('testReload', {
+          where: {
+            adName: demoReload.val().trim(),
+          }
+        });
+      }
+    };
+
+    $('#demoTable .layui-btn').on('click', function () {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+
+    //重置搜索框
+    $('#reset').on('click', function () {
+      $('#demoReload').val("");
+      active.reload();
+    });
+
+
+    form.on('switch(switchTest)', function (data) {
+      var flag=null;
+      // 获取当前控件
+      var selectIfKey=data.othis;
+      // 获取当前所在行
+      var parentTr = selectIfKey.parents("tr");
+      var dataField = $(parentTr).find("td:eq(1)").find(".layui-table-cell").text();
+
+      if(data.elem.checked == true){
+        flag=1;
+      }
+      if(data.elem.checked == false){
+        flag=0;
+      }
+
+      $.ajax({
+        type: 'post',
+        url: '[[@{/news/updateState}]]', // ajax请求路径
+        data: {
+          id:dataField,
+          state:flag
+        },
+        dataType:'json',
+        async:false,
+        success: function(data){
+          if(data.state==200){
+            return layer.msg(data.message);
+          }else {
+            return layer.msg(data.message);
+          }
+        }
+      });
+      return false;
+    });
+
+    form.on('switch(switchTest1)', function (data) {
+      var flag=null;
+      // 获取当前控件
+      var selectIfKey=data.othis;
+      // 获取当前所在行
+      var parentTr = selectIfKey.parents("tr");
+      var dataField = $(parentTr).find("td:eq(1)").find(".layui-table-cell").text();
+      if(data.elem.checked == true){
+        flag=1;
+      }
+      if(data.elem.checked == false){
+        flag=0;
+      }
+
+      $.ajax({
+        type: 'post',
+        url: '[[@{/news/updateState}]]', // ajax请求路径
+        data: {
+          id:dataField,
+          top:flag
+        },
+        dataType:'json',
+        async:false,
+        success: function(data){
+          if(data.state==200){
+            return layer.msg(data.message);
+          }else {
+            return layer.msg(data.message);
+          }
+        }
+      });
+
+    });
+
+
+    //添加通知公告
+    $('#addNews').on('click', function () {
+      $("#newsInfo").css("display", "block");
+      $('#newsList').css('display', 'none');
+      $('#newsId').val("");
+      $('#title').val("");
+    });
+
+    // //监听分页
+    // $.get('[[@{/news/getDicList}]]', {}, function (data) {
+    //   var $html = "";
+    //   if (data.data != null) {
+    //     $.each(data.data, function (index, item) {
+    //
+    //       if (item.proType) {
+    //         $html += "<option class='generate' value='" + item.code + "'>" + item.names + "</option>";
+    //       } else {
+    //         $html += "<option value='" + item.code + "'>" + item.names + "</option>";
+    //       }
+    //     });
+    //
+    //     $("select[name='type']").append($html);
+    //     form.render('select');
+    //   }
+    // });
+
+    //多图片上传
+    var uploadInst = upload.render({
+      elem: '#photo'     /*根据绑定id，打开本地图片*/
+      , url: '${ctx}/origin/user/saveOrUpdate'  /*上传后台接受接口*/
+      , auto: false        /*true为选中图片直接提交，false为不提交根据bindAction属性上的id提交*/
+      , bindAction: '#formSubmit'   /*提交图片*/
+      , choose: function (obj) {
+        //预读本地文件示例，不支持ie8
+        obj.preview(function (index, file, result) {
+          $('#photo').attr('src', result); //图片链接（base64）
+        });
+      }
+      , done: function (res) {
+        //如果上传失败
+        if (res.code > 0) {
+          return layer.msg('上传失败');
+        }
+        //上传成功
+      }
+      , error: function () {
+        //演示失败状态，并实现重传
+        var demoText = $('#demoText');
+        demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+        demoText.find('.demo-reload').on('click', function () {
+          uploadInst.upload();
+        });
+      }
+    });
+
+    //监听行工具事件
+    table.on('tool(test)', function (obj) {
+      var data = obj.data;
+      var aid = data['id'];
+      if (obj.event == 'del') {
+        layer.confirm('确定删除该条数据？', {btn: ['确定', '取消'], offset: '300px', icon: 3, title: "提示"}, function (index) {
+          $.ajax({
+            type: 'post',
+            url: '[[@{/news/delNews}]]', // ajax请求路径
+            data: {
+              id: aid
+            },
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+              if (data.state == 200) {
+                layer.msg('删除成功', {
+                  icon: 1,
+                  time: 1000,
+                  end: function () {
+                    active.reload();
+                  }
+                });
+                return false;
+              } else {
+                layer.msg(data.message, {icon: 1});
+                return false;
+              }
+            }
+          });
+          layer.close(index);
+        });
+      }
+      if (obj.event == 'edit') {
+        $('#newsInfo').css('display', 'block');
+        $('#newsList').css('display', 'none');
+        $('#title').val(data['title']);
+        $('#content').val(data['content']);
+        $("#newsId").val(data['id']);
+        $("select[name='type']").val(data['type']);
+        let content = data['content'];
+        //设置富文本框内容
+        editor.txt.html(content);
+        if (data['image'] != null && data['image'] != '') {
+          $("#photo").attr("src", data['image']);
+        }
+
+        form.render();
+      }
+    });
+
+    //监听提交
+    form.on('submit(modiAdmin)', function (data) {
+      let formData = new FormData($("#signupForm1")[0]);
+      let html = editor.txt.html();
+      //把富文本框的内容添加到 表单中
+      formData.append("content", html);
+      $.ajax({
+        type: 'post',
+        url: '[[@{/news/saveOrUpdateNews}]]', // ajax请求路径
+        data: formData,
+        cache: true,
+        async: false,
+        contentType: false,   //jax 中 contentType 设置为 false 是为了避免 JQuery 对其操作，从而失去分界符，而使服务器不能正常解析文件
+        processData: false,
+        success: function (data) {
+          if (data.state == 200) {
+            layer.msg(data.message, {
+              icon: 1,
+              time: 2000,
+              end: function () {
+                location.replace('[[@{/news/showNews}]]');
+              }
+            });
+            return false;
+          } else {
+            layer.msg(data.message, {icon: 1});
+            return false;
+          }
+        }
+      });
+
+      return false;
+    });
+    //通知公告添加返回按钮
+    $(document).on('click', '#rolback', function () {
+      location.replace('[[@{/news/showNews}]]');
+    });
+
+  });
+
+
+  // 富文本框
+  const E = window.wangEditor;
+  const editor = new E("#mytextarea");
+  //设置文件上传的参数名称
+  //editor.config.uploadFileName = 'files';
+  //设置文件上传最大数量
+  editor.config.uploadImgMaxLength = 5;
+  // 菜单栏提示为下标
+  editor.config.menuTooltipPosition = 'down';
+  // 屏蔽网络图片
+  editor.config.showLinkImg = false;
+  // 配置全屏功能按钮是否展示
+  editor.config.showFullScreen = false;
+  // 配置菜单栏，设置不需要的菜单
+  editor.config.excludeMenus = ['code', 'quote','link','foreColor','indent','strikeThrough',
+    'lineHeight', 'backColor','table','emoticon', 'todo','list','video'];
+
+  //自定义上传图片事件
+  editor.config.customUploadImg = function (files, insert) {
+    let formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append("images", files[i], files[i].name);
+    }
+    $.ajax({
+      url: '/yxfyhospbj/news/image',    //上传路径
+      type: "POST",
+      data: formData,
+      async: false,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (da) {
+        if (da.errno == 0) {
+          for (let j = 0; j < da.data.length; j++) {
+            insert(da.data[j].url);
+          }
+        } else {
+          alert(da.msg);
+          return false;
+        }
+      }
+    });
+  };
+
+  //自定义视频上传
+  editor.config.customUploadVideo = function (files, insert) {
+    let formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append("videos", files[i], files[i].name);
+    }
+    $.ajax({
+      url: '/yxfyhospbj/news/video',    //上传路径
+      type: "POST",
+      data: formData,
+      async: false,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (da) {
+        if (da.errno == 0) {
+          for (let j = 0; j < da.data.length; j++) {
+            insert(da.data[j].url);
+          }
+        } else {
+          alert(da.msg);
+          return false;
+        }
+      }
+    });
+  };
+  editor.create();
+
+  function check(obj) {
+    //  点击后直接获取本点击对象
+
+    var name = obj.getAttribute("src");
+    layui.use(['layer'], function () {
+      layer = layui.layer;
+      layer.open({
+        title: '图片展示'
+        , content: '<div  class="mydiv"><img src="' + name + '"style="width:300px; height:300px"></div>'
+        , offset: ['25%', '40%']
+        , area: ['450px', '450px']
+      });
+    });
+  }
+
+</script>
+
+</body>
+
+</html>

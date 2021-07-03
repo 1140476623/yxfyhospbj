@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理系统</title>
+    <link th:href="@{/favicon.ico}" rel="shortcut icon">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" type="text/css">
+    <script th:src="@{/js/jquery-1.8.2.min.js}" type="text/javascript"></script>
+    <script th:src="@{/js/common.js}" type="text/javascript"></script>
+    <script th:src="@{/layui/layui.js}" type="text/javascript"></script>
+    <link rel="stylesheet" th:href="@{/font-awesome/css/font-awesome.min.css}">
+    <style>
+        .auth {
+            border: 1px solid rgb(200, 200, 200);
+            position: absolute;
+            top: 32%;
+            left: 32%;
+            width: 400px;
+            display: none;
+            background: white;
+            z-index: 50;
+        }
+
+        .layui-table thead tr, .layui-table-header {
+            color: #fff;
+            background-color: #5EA3E6;
+
+        }
+
+        .layui-table tbody {
+            height: 50px;
+        }
+
+    </style>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div th:replace="~{header :: copy}"></div>
+    <div th:replace="~{left :: leftpage}"></div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;">
+            <fieldset class="layui-elem-field site-demo-button" style="margin-top: 5px;height: 70px;">
+                <div id="demoTable" class="layui-field-box" style="padding-top: 17px">
+                    医生或患者姓名：
+                    <div class="layui-inline">
+                        <input style="width: 150px" class="layui-input" name="id" id="demoReload" autocomplete="off">
+                    </div>
+                    科室：
+                    <div class="layui-inline">
+                        <input style="width: 150px" class="layui-input" name="id" id="docDept" autocomplete="off">
+                    </div>
+                    <!--医生：-->
+                    <!--<div class="layui-inline">-->
+                        <!--<input style="width: 150px" class="layui-input" name="id" id="docName" autocomplete="off">-->
+                    <!--</div>-->
+                    <button class="layui-btn" data-type="reload">
+                        <i class="layui-icon layui-icon-search" style="font-size: 15px; "></i>搜索
+                    </button>
+                    <button class="layui-btn" id="reset">
+                        <i class="layui-icon layui-icon-refresh" style="font-size: 15px; "></i>重置刷新
+                    </button>
+                    <!--<button class="layui-btn " id="btnExport" style=" float:right;">-->
+                    <!--<img th:src="@{/image/excelExport.ico}" style="width: 15px;height: 15px;padding: 3px">导出-->
+                    <!--</button>-->
+                </div>
+            </fieldset>
+            <table class="layui-hide" id="test" lay-filter="test"></table>
+            <div id="test1"></div>
+
+        </div>
+    </div>
+
+
+</div>
+<input type="hidden" th:value="${pagelogo}" id="iden">
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+</script>
+<script type="text/html" id="zizeng">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>
+
+<script type="text/html" id="caStickModel">
+    <div>
+        <input type="checkbox" value={{d.status}} lay-skin="switch" lay-filter="switchTest"
+               lay-text="启用|禁用" {{ d.status=='1' ? 'checked' : '' }} >
+    </div>
+</script>
+<script>
+
+  var iden = $("#iden").val();
+  console.log(iden);
+  showthis(iden);
+
+  layui.use(['laytpl', 'laypage', 'table', 'element', 'layer', 'jquery', 'form'], function () {
+    var table = layui.table,
+      element = layui.element,
+      $ = layui.jquery,
+      form = layui.form,
+      layer = layui.layer,
+      laytpl = layui.laytpl;
+    var exportData;
+    var ins1 = table.render({
+      id: 'testReload'
+      , elem: '#test'
+      , url: '[[@{/regInfo/getRegRecordList}]]'
+      , title: '患者挂号记录表'
+      , skin: 'nob'
+      , cols: [
+        [
+          // {type: 'checkbox'},
+          {field: 'zizeng', type: 'numbers', title: '序号', style: 'height:65px;'},
+          {field: 'registerNo', title: '挂号单号', align: 'center'},
+          {field: 'residentName', title: '姓名', align: 'center'},
+          {field: 'deptName', title: '诊室', align: 'center'},
+          {field: 'docName', title: '医生姓名', align: 'center'},
+          {field: 'registerDate', title: '挂号时间', align: 'center'},
+          {field: 'numCome', title: '自助机编号', align: 'center'}
+        ]
+      ],
+      page: true
+    });
+
+    var checkboxid = [];
+
+
+    //重置搜索框
+    $('#reset').on('click', function () {
+      $('#demoReload').val(""),
+        $('#docDept').val(""),
+        //$('#docName').val(""),
+        $('#numCome').val(""),
+        active.reload();
+    });
+
+
+    var checkboxid = [];
+    table.on('checkbox(test)', function (obj) {
+      var data = obj.data;
+      if (obj.type == 'one') {
+        if (obj.checked) {
+          checkboxid.push(data.id);
+        } else {
+          checkboxid.splice(checkboxid.findIndex(e => e.id === data.id), 1)
+        }
+      }
+
+    });
+
+
+    //导出
+    $("#btnExport").click(function (res) {
+      var demoReload = $('#demoReload');
+      var docDept = $('#docDept');
+      //var docName = $('#docName');
+      var numCome = $('#numCome');
+      $.ajax({
+        type: 'post',
+        url: '[[@{/regInfo/exportRegRecord}]]', // ajax请求路径
+        data: {
+          adName: demoReload.val().trim(),
+          docDept: docDept.val().trim(),
+          //type: docName.val().trim(),
+          payStatus: numCome.val()
+        },
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+          var res = data.data;
+          if (data.code == 200) {
+            if (res.length <= 0) {
+              layer.msg("暂无数据导出");
+              return false;
+            }
+            for (var i in res) {
+              var idType = res[i].idType;
+              if (idType == "01") {
+                res[i].idType = "身份证"
+              } else
+                res[i].idType = "其他证件"
+            }
+            table.exportFile(ins1.config.id, data.data, 'xls');
+          } else {
+            layer.msg("导出表格失败", {
+              time: 2000,
+              end: function () {
+                parent.location.reload();
+              }
+            });
+          }
+        }
+      });
+    });
+
+    var active = {
+      reload: function () {
+        var demoReload = $('#demoReload');
+        var docDept = $('#docDept');
+        //var docName = $('#docName');
+        var numCome = $('#numCome');
+
+        //执行重载
+        table.reload('testReload', {
+          page: {
+            curr: 1 //重新从第 1 页开始
+          }
+          , where: {
+            adName: demoReload.val().trim(),
+            docDept: docDept.val().trim(),
+            //docName: docName.val().trim(),
+            numCome: numCome.val()
+          }
+        });
+      }
+    };
+
+    $('#demoTable .layui-btn').on('click', function () {
+      var type = $(this).data('type');
+      active[type] ? active[type].call(this) : '';
+    });
+
+
+  });
+
+</script>
+
+</body>
+
+</html>
